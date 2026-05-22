@@ -71,7 +71,7 @@ public:
         { ConsumableID::APPLE,        2 },   /* começa com 2 maçãs */
         { ConsumableID::MELON_PIE,    0 },
         { ConsumableID::ASSASIN_HERB, 0 },
-        { ConsumableID::STAR_FRUIT,   0 }
+        { ConsumableID::STAR_FRUIT,   5 }
     };
 
     bool usarConsumivel(ConsumableID id, finalStats &fs, int &critRate) {

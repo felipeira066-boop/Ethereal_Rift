@@ -14,13 +14,10 @@ SRCS = src/main.cpp library/assets/sounds/background.cpp
 
 all: $(TARGET)
 
+$(SRCS): $(shell find library -name "*.hpp")
+
 $(TARGET) : $(SRCS)
 	$(CXX) $(CXXFLAGS) $^ -o $(TARGET) $(LDFLAGS)
 
-$(SRCS): $(shell find library -name "*.hpp")
-
 clean:
 	rm -f $(TARGET)
-
-
- 

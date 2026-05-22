@@ -16,10 +16,13 @@ using std::cin;
 struct EnemyData {
     std::string nome;
     int         hp;
+    int         hpmax;
     uint32_t    damage;
     uint32_t    shield;
     uint32_t    expRecompensa;
     uint32_t    coinRecompensa;
+    int16_t     speed;
+    int         isAlive() const { return hp > 0; }
 
 };
 
@@ -28,19 +31,19 @@ struct EnemyData {
 ═══════════════════════════════════════════════════ */
 
 inline std::vector<EnemyData> arenaInimigos = {
-    { "Goblin",           25,  10,  0,  40,  10  },
-    { "Goblin Arqueiro",  25,  15,  0,  44,  12  },
-    { "Goblin Guerreiro", 30,  13,  1,  44,  12  },
-    { "Goblin de Elite",  34,  18,  1,  55,  18  },
-    { "Lobo Selvagem",    45,  16,  2,  60,  25  },
-    { "Lobo Alfa",        47,  16,  2,  78,  35  },
-    { "Javali Selvagem",  60,  16,  3,  98,  50  },
-    { "Javali Selvagem",  60,  16,  3,  98,  50  },
-    { "Javali Selvagem",  60,  19,  3,  98,  50  },
-    { "Ogro",             75,  22,  3,  95,  50  },
-    { "Ogro",             75,  22,  3,  95,  50  },
-    { "Ogro Chefe",       90,  25,  4, 150,  80  },
-    { "Dragao",           150, 32,  5, 200, 150  }
+    /* nome               hp  hpmax dmg shl exp coin  vel*/
+    { "Goblin",           25,  25,  8,   0,  40,  10,   4 },
+    { "Goblin Arqueiro",  25,  25,  10,  0,  44,  12,   5 },
+    { "Goblin Guerreiro", 28,  28,  10,  1,  44,  12,   5 },
+    { "Goblin de Elite",  32,  32,  14,  1,  55,  18,   6 },
+    { "Lobo Selvagem",    40,  40,  16,  2,  60,  25,   7 },
+    { "Lobo Alfa",        48,  48,  20,  3,  70,  30,   8 },
+    { "Javali Selvagem",  52,  52,  20,  3,  98,  50,  10 },
+    { "Javali Selvagem",  52,  52,  20,  3,  98,  50,  10 },
+    { "Ogro",             60,  60,  22,  3,  95,  50,  11 },
+    { "Ogro",             67,  67,  22,  3,  95,  50,  11 },
+    { "Ogro Chefe",       74,  74,  25,  4, 150,  80,  15 },
+    { "Dragao",           82,  82,  32,  5, 200, 150,  20 }
 };
 
 /* ═══════════════════════════════════════════════════
@@ -48,22 +51,40 @@ inline std::vector<EnemyData> arenaInimigos = {
 ═══════════════════════════════════════════════════ */
 
 inline void printBarraHP(const std::string &nome, int current, int max) {
-    int total  = 30;
+    int total  = 20;
     int cheios = (max > 0) ? (current * total / max) : 0;
 
-    cout << "  " << nome << "\n   [";
+    cout << "  " << nome << "\n   HP-[";
     for (int i = 0; i < total; i++)
         cout << (i < cheios ? "\33[31m❤\33[0m " : "▪ ");
     cout << "] " << current << "/" << max << std::endl;
 }
 
+/* ═══════════════════════════════════════════════════
+   Barra de Mana visual
+═══════════════════════════════════════════════════ */
+
 inline void printBarraMana( int current, int max) {
-    int total  = 30;
+    int total  = 40;
     int cheios = (max > 0) ? (current * total / max) : 0;
 
-    cout << "   [";
+    cout << "   Mana-[";
     for (int i = 0; i < total; i++)
-        cout << (i < cheios ? "\33[34m🔹\33[0m" : "▪ ");
+        cout << (i < cheios ? "\33[36m◆\33[0m" : "▪ ");
+    cout << "] " << current << "/" << max << std::endl;
+}
+
+/* ═══════════════════════════════════════════════════
+   Barra de Exp visual
+═══════════════════════════════════════════════════ */
+
+inline void printBarraExp( int current, int max) {
+    int total  = 40;
+    int cheios = (max > 0) ? (current * total / max) : 0;
+
+    cout << "   Exp-[";
+    for (int i = 0; i < total; i++)
+    cout << (i < cheios ? "\33[32m=\33[0m" : "-");
     cout << "] " << current << "/" << max << std::endl;
 }
 
@@ -71,71 +92,96 @@ inline void printBarraMana( int current, int max) {
    Batalha principal — integra moves + HP + crítico
 ═════════════════════════════════════════════════ */
 
-template <typename T>
-bool battle(T &jogador, EnemyData &inimigo, const std::string &nomeJogador) {
+template <typename P>
 
-    int hpInimigo    = inimigo.hp;
-    int hpInimigoMax = inimigo.hp;
+bool PlayerTurn(P &jogador, EnemyData &inimigo, const std::string &nomeJogador){
+    /* turno do jogador — escolhe move */
+    const MoveData *move = jogador.escolherMove(jogador.getNivel(), jogador);
+
+    if (move) {
+        /* cura (para Cleric) */
+        if (move->curaBase > 0) {
+            jogador.getHeal(move->curaBase);
+            cout << "  > " << move->nome
+                << " — curou " << move->curaBase << " HP!\n";
+
+            jogador.useMana(move->costMana);
+            cout << "  > Mana restante: " << jogador.getCurrentMana() << "\n";
+        }
+
+        /* dano no inimigo */
+        if (move->danoBase > 0) {
+            /* aplica stats do jogador no dano */
+            finalStats fs = jogador.getStats();
+            jogador.CriticalDamage(fs);
+            int danoFinal = move->danoBase + (int)fs.Damage;
+            int danoComShield = danoFinal - (int)(inimigo.shield);
+            if (danoComShield < 0) danoComShield = 0;
+
+            inimigo.hp -= danoComShield;
+            if (inimigo.hp < 0) inimigo.hp = 0;
+
+            cout << "  > " << move->nome
+                << " causou " << danoComShield
+                << " de dano em " << inimigo.nome << "!\n";
+
+            jogador.useMana(move->costMana);
+            cout << "  > Mana restante: " << jogador.getCurrentMana() << "\n";
+        }
+    } else {
+        cout << "  > Nenhum move usado!\n";
+    }
+    return true;
+}
+
+template <typename M>
+
+bool MonsterTurn(M &jogador, EnemyData &inimigo){
+    finalStats iniStats;
+    iniStats.Damage = inimigo.damage;
+    iniStats.Shield = inimigo.shield;
+    iniStats.MaxHP  = inimigo.hpmax;
+    iniStats.Speed  = inimigo.speed;
+    iniStats.MaxMana = 0;
+
+    cout << "  > " << inimigo.nome << " ataca!\n";
+    jogador.takeDamage(iniStats);
+
+    return true;
+}
+
+template <typename B>
+
+bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador) {
     int turno        = 1;
 
     cout << "\n========================================\n";
     cout << "  BATALHA: " << nomeJogador << " vs " << inimigo.nome << "\n";
     cout << "========================================\n";
 
-    while (jogador.isAlive() && hpInimigo > 0) {
+    while (jogador.isAlive() && inimigo.isAlive()) {
 
         cout << "\n  -- Turno: " << turno << " --\n";
         printBarraHP(nomeJogador,  jogador.getHP(), jogador.getMaxHP());
         printBarraMana( jogador.getCurrentMana(), jogador.getMaxMana());
-        printBarraHP(inimigo.nome, hpInimigo,       hpInimigoMax);
+        printBarraExp( jogador.getExp(), jogador.getExpMax());
+
+        printBarraHP(inimigo.nome, inimigo.hp, inimigo.hpmax);
         
-        /* turno do jogador — escolhe move */
-        const MoveData *move = jogador.escolherMove(jogador.getNivel());
+        if(jogador.getStats().Speed > (uint32_t)inimigo.speed){
+            PlayerTurn(jogador, inimigo, nomeJogador);
 
-        if (move) {
-            /* cura (para Cleric) */
-            if (move->curaBase > 0) {
-                jogador.getHeal(move->curaBase);
-                cout << "  > " << move->nome
-                     << " — curou " << move->curaBase << " HP!\n";
+            if(!inimigo.isAlive()) break;
 
-                jogador.useMana(move->costMana);
-                cout << "  > Mana restante: " << jogador.getCurrentMana() << "\n";
-            }
+            MonsterTurn(jogador, inimigo);
+        } else {
+            MonsterTurn(jogador, inimigo);
+            if(!jogador.isAlive()) break;
 
-            /* dano no inimigo */
-            if (move->danoBase > 0) {
-                /* aplica stats do jogador no dano */
-                finalStats fs = jogador.getStats();
-                jogador.CriticalDamage(fs);
-                int danoFinal = move->danoBase + (int)fs.Damage;
-                int danoComShield = danoFinal - (int)(inimigo.shield);
-                if (danoComShield < 0) danoComShield = 0;
-
-                hpInimigo -= danoComShield;
-                if (hpInimigo < 0) hpInimigo = 0;
-
-                cout << "  > " << move->nome
-                     << " causou " << danoComShield
-                     << " de dano em " << inimigo.nome << "!\n";
-
-                jogador.useMana(move->costMana);
-                cout << "  > Mana restante: " << jogador.getCurrentMana() << "\n";
-            }
+            PlayerTurn(jogador, inimigo, nomeJogador);
         }
 
-        if (hpInimigo <= 0) break;
-
-        /* turno do inimigo */
-        finalStats iniStats;
-        iniStats.Damage = inimigo.damage;
-        iniStats.Shield = inimigo.shield;
-        iniStats.MaxHP  = inimigo.hp;
-        iniStats.Speed  = 0;
-        iniStats.MaxMana = 0;
-
-        cout << "  > " << inimigo.nome << " ataca!\n";
-        jogador.takeDamage(iniStats);
+        jogador.CurrentMana += 2;
 
         turno++;
     }
@@ -144,7 +190,7 @@ bool battle(T &jogador, EnemyData &inimigo, const std::string &nomeJogador) {
     printBarraHP(nomeJogador, jogador.getHP(), jogador.getMaxHP());
     cout << "\n";
 
-    if (hpInimigo <= 0) {
+    if (!inimigo.isAlive()) {
         cout << "  Voce derrotou " << inimigo.nome << "!\n";
         cout << "  + " << inimigo.expRecompensa  << " EXP\n";
         cout << "  + " << inimigo.coinRecompensa << " moedas\n";
@@ -201,8 +247,8 @@ void arena(T &jogador, const std::string &nomeJogador) {
         cout << "========================================\n";
         cout << "  " << nomeJogador
              << " | Nivel " << jogador.getNivel()
-             << " | HP " << jogador.getHP()
-             << "/" << jogador.getMaxHP() << "\n";
+            << " | HP " << jogador.getHP()
+            << "/" << jogador.getMaxHP() << "\n";
         cout << "========================================\n";
     }
 

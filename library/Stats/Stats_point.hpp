@@ -42,7 +42,7 @@ class totalStats{
             fs.Shield = st.DEF + rs.bonus_def;
             fs.Speed = st.VEL + rs.bonus_vel + 1;    
             fs.Damage = ((st.FOR + rs.bonus_for) + (st.INT + rs.bonus_int));
-            fs.MaxMana = (st.INT + rs.bonus_int + 10) * 2;
+            fs.MaxMana = (st.INT + rs.bonus_int + 10) * 10;
 
             return fs;
         }

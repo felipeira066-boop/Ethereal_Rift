@@ -113,8 +113,9 @@ public:
         std::cout << "  > ";
     }
 
+    template<typename P>
     /* retorna o move escolhido pelo jogador */
-    const MoveData *escolherMove(uint16_t nivel) const {
+    const MoveData *escolherMove(uint16_t nivel, const P &jogador) const {
         if (!moveTable) return nullptr;
 
         exibirMoves(nivel);
@@ -131,7 +132,7 @@ public:
             std::cout << "  Move bloqueado! Usando o primeiro disponivel.\n";
             return &(*moveTable)[0];
         }
-        if(m.costMana > fs.CurrentMana){
+        if(m.costMana > jogador.getCurrentMana()){
             std::cout << "  Você não tem mana suficiente para usar este move.\n";
             std::cout << "  Nunhum move usado! \n" << std::endl;
             return nullptr;
