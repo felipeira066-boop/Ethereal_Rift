@@ -95,16 +95,19 @@ public:
             const MoveData &m = (*moveTable)[i];
 
             if (nivel >= m.nivelMinimo) {
+
                 std::cout << "    " << (i + 1) << ". "
                           << m.nome
-                          << " (dano: " << m.danoBase << ")"
-                          << "\n"
-                          << " (Mana: " << m.costMana << ")\n";
+                          << "  (dano: " << m.danoBase << ")"
+                          << "  (cura: " << m.curaBase << ")"
+                          << "  (Mana: " << m.costMana << ")\n";
+
             } else {
                 std::cout << "    " << (i + 1) << ". "
                           << m.nome
                           << " (bloqueado — nivel " << m.nivelMinimo << ")"
                           << "\n";
+                          
             }
         }
         std::cout << "  > ";
@@ -127,6 +130,11 @@ public:
         if (nivel < m.nivelMinimo) {
             std::cout << "  Move bloqueado! Usando o primeiro disponivel.\n";
             return &(*moveTable)[0];
+        }
+        if(m.costMana > fs.CurrentMana){
+            std::cout << "  Você não tem mana suficiente para usar este move.\n";
+            std::cout << "  Nunhum move usado! \n" << std::endl;
+            return nullptr;
         }
 
         return &m;

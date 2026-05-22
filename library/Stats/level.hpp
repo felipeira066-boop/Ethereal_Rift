@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <iostream>
+#include <cmath>
 
 /* ═══════════════════════════════════════════════════
    Sistema de EXP e Level Up
@@ -15,7 +16,8 @@ protected:
 
     /* EXP necessária para o próximo nível */
     uint32_t expParaProximoNivel() const {
-        return 100 * currentLevel * currentLevel;
+        double exp = 100.0 * std::pow(1.5, currentLevel);
+        return static_cast<uint32_t>(exp);
     }
 
 public:
@@ -40,7 +42,7 @@ public:
             currentExp   -= expParaProximoNivel();
             currentLevel += 1;
 
-            std::cout << "\n  *** LEVEL UP! Agora voce e nivel "
+            std::cout << "\n  *** LEVEL UP! Nível atual: "
                       << currentLevel << " ***\n";
         }
     }

@@ -28,19 +28,19 @@ struct EnemyData {
 ═══════════════════════════════════════════════════ */
 
 inline std::vector<EnemyData> arenaInimigos = {
-    { "Goblin",           14,  8,  0,  40,  10  },
-    { "Goblin Arqueiro",  10,  8,  0,  44,  12  },
-    { "Goblin Guerreiro", 14,  9,  1,  44,  12  },
-    { "Goblin de Elite",  18,  10,  1,  55,  18  },
-    { "Lobo Selvagem",    28,  10,  2,  60,  25  },
-    { "Lobo Alfa",        32,  12,  2,  78,  35  },
-    { "Javali Selvagem",  45,  12,  3,  98,  50  },
-    { "Javali Selvagem",  45,  12,  3,  98,  50  },
-    { "Javali Selvagem",  45,  15,  3,  98,  50  },
-    { "Ogro",             45,  17,  3,  95,  50  },
-    { "Ogro",             45,  17,  3,  95,  50  },
-    { "Ogro Chefe",       60,  20,  4, 150,  80  },
-    { "Dragao",           80,  25,  5, 200, 150  }
+    { "Goblin",           25,  10,  0,  40,  10  },
+    { "Goblin Arqueiro",  25,  15,  0,  44,  12  },
+    { "Goblin Guerreiro", 30,  13,  1,  44,  12  },
+    { "Goblin de Elite",  34,  18,  1,  55,  18  },
+    { "Lobo Selvagem",    45,  16,  2,  60,  25  },
+    { "Lobo Alfa",        47,  16,  2,  78,  35  },
+    { "Javali Selvagem",  60,  16,  3,  98,  50  },
+    { "Javali Selvagem",  60,  16,  3,  98,  50  },
+    { "Javali Selvagem",  60,  19,  3,  98,  50  },
+    { "Ogro",             75,  22,  3,  95,  50  },
+    { "Ogro",             75,  22,  3,  95,  50  },
+    { "Ogro Chefe",       90,  25,  4, 150,  80  },
+    { "Dragao",           150, 32,  5, 200, 150  }
 };
 
 /* ═══════════════════════════════════════════════════
@@ -63,7 +63,7 @@ inline void printBarraMana( int current, int max) {
 
     cout << "   [";
     for (int i = 0; i < total; i++)
-        cout << (i < cheios ? "\33[34m🔹\33[0m " : "▪ ");
+        cout << (i < cheios ? "\33[34m🔹\33[0m" : "▪ ");
     cout << "] " << current << "/" << max << std::endl;
 }
 

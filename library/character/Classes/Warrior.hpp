@@ -13,7 +13,6 @@
 class Warrior : virtual public HP, virtual public Mana, public Exp, public MoveSystem, public setEffects {
 private:
     stats          WaStats = {0, 0, 0, 0, 0};
-    finalStats     Wafs;
     warriorArmament armamento;
 
 public:
@@ -68,7 +67,6 @@ public:
     int      getMaxHP()       const { return (int)myStats.MaxHP; }
     uint16_t CurrentLevel()const { return Exp::currentLevel; }
     uint16_t getCurrentMana() const { return CurrentMana; }
-    uint16_t getMaxMana( ) const { return Wafs.MaxMana; }
 
     std::map<ConsumableID, int> inventory{  /* inventário de consumíveis (ID e quantidade) */
         { ConsumableID::APPLE,        2 },   /* começa com 2 maçãs */

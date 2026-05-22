@@ -38,11 +38,11 @@ class totalStats{
         static finalStats contagem(const stats& st, const raceStats& rs){
             finalStats fs;
 
-            fs.MaxHP = (st.VIG + rs.bonus_vig + 10) * 3;
+            fs.MaxHP = (st.VIG + rs.bonus_vig + 10) * 2;
             fs.Shield = st.DEF + rs.bonus_def;
-            fs.Speed = st.VEL + rs.bonus_vel +1;    
+            fs.Speed = st.VEL + rs.bonus_vel + 1;    
             fs.Damage = ((st.FOR + rs.bonus_for) + (st.INT + rs.bonus_int));
-            fs.MaxMana = (st.INT + rs.bonus_int + 10)*2;
+            fs.MaxMana = (st.INT + rs.bonus_int + 10) * 2;
 
             return fs;
         }

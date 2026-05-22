@@ -5,7 +5,8 @@
 
 class Mana{
 
-    private:
+    protected:
+        finalStats manaStats;
 
     public:
         uint32_t CurrentMana;
@@ -17,7 +18,8 @@ class Mana{
             std::cout << "  Mana restaurada! Atual: " << CurrentMana << "\n";
         }
         void initMana(const finalStats &fs) {       
-            CurrentMana = fs.MaxMana;
+            manaStats = fs;
+            CurrentMana = manaStats.MaxMana;
         }
 
         void useMana(uint32_t quantidade) {
@@ -25,6 +27,5 @@ class Mana{
             else CurrentMana -= quantidade;
         }
 
-        int32_t getCurrentMana() const { return CurrentMana; }
-        int32_t getMaxMana(const finalStats &fs) const { return fs.MaxMana; }
+        uint32_t getMaxMana() const { return manaStats.MaxMana; }
 };
