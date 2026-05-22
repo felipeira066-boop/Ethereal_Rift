@@ -6,9 +6,10 @@
 class Mana{
 
     private:
-    uint32_t CurrentMana;
 
     public:
+        uint32_t CurrentMana;
+
         /* resetMana é redundante — getMana já faz o teto */
         void getMana(int quantidade, uint32_t maxMana) {
             CurrentMana += quantidade;
@@ -25,4 +26,5 @@ class Mana{
         }
 
         int32_t getCurrentMana() const { return CurrentMana; }
+        int32_t getMaxMana(const finalStats &fs) const { return fs.MaxMana; }
 };

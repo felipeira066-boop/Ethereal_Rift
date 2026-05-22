@@ -28,19 +28,19 @@ struct EnemyData {
 ═══════════════════════════════════════════════════ */
 
 inline std::vector<EnemyData> arenaInimigos = {
-    { "Goblin",           14,  3,  0,  40,  10  },
-    { "Goblin Arqueiro",  10,  3,  0,  44,  12  },
-    { "Goblin Guerreiro", 14,  4,  1,  44,  12  },
-    { "Goblin de Elite",  18,  5,  1,  55,  18  },
-    { "Lobo Selvagem",    28,  7,  2,  60,  25  },
-    { "Lobo Alfa",        32,  8,  2,  78,  35  },
-    { "Javali Selvagem",  45,  9,  3,  98,  50  },
-    { "Javali Selvagem",  45,  9,  3,  98,  50  },
-    { "Javali Selvagem",  45,  9,  3,  98,  50  },
-    { "Ogro",             45,  9,  3,  95,  50  },
-    { "Ogro",             45,  9,  3,  95,  50  },
-    { "Ogro Chefe",       60, 12,  4, 150,  80  },
-    { "Dragao",           80, 14,  5, 200, 150  }
+    { "Goblin",           14,  8,  0,  40,  10  },
+    { "Goblin Arqueiro",  10,  8,  0,  44,  12  },
+    { "Goblin Guerreiro", 14,  9,  1,  44,  12  },
+    { "Goblin de Elite",  18,  10,  1,  55,  18  },
+    { "Lobo Selvagem",    28,  10,  2,  60,  25  },
+    { "Lobo Alfa",        32,  12,  2,  78,  35  },
+    { "Javali Selvagem",  45,  12,  3,  98,  50  },
+    { "Javali Selvagem",  45,  12,  3,  98,  50  },
+    { "Javali Selvagem",  45,  15,  3,  98,  50  },
+    { "Ogro",             45,  17,  3,  95,  50  },
+    { "Ogro",             45,  17,  3,  95,  50  },
+    { "Ogro Chefe",       60,  20,  4, 150,  80  },
+    { "Dragao",           80,  25,  5, 200, 150  }
 };
 
 /* ═══════════════════════════════════════════════════
@@ -48,18 +48,28 @@ inline std::vector<EnemyData> arenaInimigos = {
 ═══════════════════════════════════════════════════ */
 
 inline void printBarraHP(const std::string &nome, int current, int max) {
-    int total  = 20;
+    int total  = 30;
     int cheios = (max > 0) ? (current * total / max) : 0;
 
-    cout << "  " << nome << " [";
+    cout << "  " << nome << "\n   [";
     for (int i = 0; i < total; i++)
-        cout << (i < cheios ? "❤ " : ".");
-    cout << "] " << current << "/" << max << "\n";
+        cout << (i < cheios ? "\33[31m❤\33[0m " : "▪ ");
+    cout << "] " << current << "/" << max << std::endl;
+}
+
+inline void printBarraMana( int current, int max) {
+    int total  = 30;
+    int cheios = (max > 0) ? (current * total / max) : 0;
+
+    cout << "   [";
+    for (int i = 0; i < total; i++)
+        cout << (i < cheios ? "\33[34m🔹\33[0m " : "▪ ");
+    cout << "] " << current << "/" << max << std::endl;
 }
 
 /* ═══════════════════════════════════════════════════
    Batalha principal — integra moves + HP + crítico
-═══════════════════════════════════════════════════ */
+═════════════════════════════════════════════════ */
 
 template <typename T>
 bool battle(T &jogador, EnemyData &inimigo, const std::string &nomeJogador) {
@@ -74,10 +84,11 @@ bool battle(T &jogador, EnemyData &inimigo, const std::string &nomeJogador) {
 
     while (jogador.isAlive() && hpInimigo > 0) {
 
-        cout << "\n  -- Turno " << turno << " --\n";
+        cout << "\n  -- Turno: " << turno << " --\n";
         printBarraHP(nomeJogador,  jogador.getHP(), jogador.getMaxHP());
+        printBarraMana( jogador.getCurrentMana(), jogador.getMaxMana());
         printBarraHP(inimigo.nome, hpInimigo,       hpInimigoMax);
-
+        
         /* turno do jogador — escolhe move */
         const MoveData *move = jogador.escolherMove(jogador.getNivel());
 

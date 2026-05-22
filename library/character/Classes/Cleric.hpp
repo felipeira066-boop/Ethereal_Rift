@@ -16,6 +16,7 @@
 class Cleric : virtual  public HP, virtual public Mana, public Exp, public MoveSystem, public setEffects {
 private:
     stats          ClStats = {0, 0, 0, 0, 0};
+    finalStats     Clfs;
     clericArmament armamento;
 
 public:
@@ -71,6 +72,8 @@ public:
 
     int      getMaxHP()       const { return (int)myStats.MaxHP; }
     uint16_t getCurrentLevel()const { return currentLevel; }
+    uint16_t getCurrentMana() const { return CurrentMana; }
+    uint16_t getMaxMana() const { return Clfs.MaxMana; }
 
 
     std::map<ConsumableID, int> inventory{  /* inventário de consumíveis (ID e quantidade) */

@@ -17,6 +17,8 @@ all: $(TARGET)
 $(TARGET) : $(SRCS)
 	$(CXX) $(CXXFLAGS) $^ -o $(TARGET) $(LDFLAGS)
 
+$(SRCS): $(shell find library -name "*.hpp")
+
 clean:
 	rm -f $(TARGET)
 
