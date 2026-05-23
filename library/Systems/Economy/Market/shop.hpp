@@ -152,6 +152,8 @@ public:
       cout << "  > Pressione ENTER para continuar...\n";
       cin.ignore();
 
+      setBuy();
+
       return true;
    }
 
