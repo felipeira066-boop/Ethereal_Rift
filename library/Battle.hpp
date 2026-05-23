@@ -218,8 +218,9 @@ void arena(T &jogador, const std::string &nomeJogador) {
 
         cout << "O que deseja fazer?\n";
         cout << "  1. Entrar em batalha\n";
-        cout << "  2. Usar Consumíveis\n";
-        cout << "> ";
+        cout << "  2. Usar item\n";
+        cout << "  3. Ir para a loja\n";
+        cout << "  > ";
 
         int esc;
         cin >> esc;
@@ -236,6 +237,11 @@ void arena(T &jogador, const std::string &nomeJogador) {
             } else {
                 cout << "  Opção inválida!\n";
             }
+        }
+
+        if(esc == 3){
+            Shop shop;
+            shop.initShop();
         }
 
         if (!battle(jogador, inimigo, nomeJogador))

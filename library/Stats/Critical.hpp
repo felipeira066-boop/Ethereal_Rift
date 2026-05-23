@@ -11,7 +11,7 @@ class critical{
     }
 
     void CriticalDamage(finalStats &fs){
-        int critical_rate = gerarCritico();
+        int critical_rate = gerarCritico() + fs.Speed; // A velocidade do jogador aumenta a chance de crítico
 
         if (critical_rate >= 25){
             fs.Damage *= 2;
