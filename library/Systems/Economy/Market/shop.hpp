@@ -164,8 +164,8 @@ public:
       cin >> op;
       cin.ignore();
 
-      if(op == 1) return setBuy();
-      if(op == 2) return setSell();
+      if(op == 1) setBuy();
+      if(op == 2) setSell();
       if(op == 3) return false;
 
       return true;
