@@ -12,55 +12,46 @@ class Buy {
    private:
       void HeavyWeapons(){
          cout << "  > Você escolheu comprar armas pesadas!\n";
-         cout << "  > Pressione ENTER para continuar...\n";
          cin.ignore();
       }
 
       void LightWeapons(){
          cout << "  > Você escolheu comprar armas leves!\n";
-         cout << "  > Pressione ENTER para continuar...\n";
          cin.ignore();
       }
 
       void MagicWeapons(){
          cout << "  > Você escolheu comprar armas mágicas!\n";
-         cout << "  > Pressione ENTER para continuar...\n";
          cin.ignore();
       }
 
       void HeavyArmors(){
          cout << "  > Você escolheu comprar armaduras pesadas!\n";
-         cout << "  > Pressione ENTER para continuar...\n";
          cin.ignore();
       }
 
       void LightArmors(){
          cout << "  > Você escolheu comprar armaduras leves!\n";
-         cout << "  > Pressione ENTER para continuar...\n";
          cin.ignore();
       }
 
       void MagicArmors(){
          cout << "  > Você escolheu comprar armaduras mágicas!\n";
-         cout << "  > Pressione ENTER para continuar...\n";
          cin.ignore();
       }
 
       void HealthPotions(){
          cout << "  > Você escolheu comprar poções de vida!\n";
-         cout << "  > Pressione ENTER para continuar...\n";
          cin.ignore();
       }
 
       void ManaPotions(){
          cout << "  > Você escolheu comprar poções de mana!\n";
-         cout << "  > Pressione ENTER para continuar...\n";
          cin.ignore();
       }
 
       void StrengthPotions(){
          cout << "  > Você escolheu comprar poções de força!\n";
-         cout << "  > Pressione ENTER para continuar...\n";
          cin.ignore();
       }
 
@@ -100,7 +91,6 @@ class Buy {
             << "  > ";
          int op;
          cin >> op;
-         cin.ignore();
 
          switch (op) {
             case 1:
@@ -126,7 +116,6 @@ class Buy {
             << "  > ";
          int op;
          cin >> op;
-         cin.ignore();
 
          switch (op) {
             case 1:
@@ -149,9 +138,7 @@ public:
    bool initShop() {
       cout  << "  > Bem-vindo à minha loja! Meu nome é "
             << genName() << " e eu vendo os melhores itens da região!\n";
-      cout << "  > Pressione ENTER para continuar...\n";
-      cin.ignore();
-
+      cin.get();
       setBuy();
 
       return true;
@@ -159,12 +146,11 @@ public:
 
    bool setShop(){
       cout << "  [1] Comprar\n"
-         << "  [2] Vender\n"
-         << "  [3] Sair\n"
+           << "  [2] Vender\n"
+           << "  [3] Sair\n"
          << "  > ";
       int op;
       cin >> op;
-      cin.ignore();
 
       if(op == 1) setBuy();
       if(op == 2) setSell();
@@ -184,7 +170,6 @@ public:
          << "  > ";
       int op;
       cin >> op;
-      cin.ignore();
 
       if(op == 1) buy.buyWeapons();
       if(op == 2) buy.buyArmors();
@@ -194,7 +179,6 @@ public:
 
    void setSell(){
       cout << "  O que você quer vender? \n";
-      cout << "  > Pressione ENTER para continuar...\n";
       cin.ignore();
    }
 };

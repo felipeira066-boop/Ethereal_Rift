@@ -32,18 +32,18 @@ struct EnemyData {
 
 inline std::vector<EnemyData> arenaInimigos = {
     /* nome               hp  hpmax dmg shl exp coin  vel*/
-    { "Goblin",           25,  25,  8,   0,  40,  10,   4 },
-    { "Goblin Arqueiro",  25,  25,  10,  0,  44,  12,   5 },
-    { "Goblin Guerreiro", 28,  28,  10,  1,  44,  12,   5 },
-    { "Goblin de Elite",  32,  32,  14,  1,  55,  18,   6 },
-    { "Lobo Selvagem",    40,  40,  16,  2,  60,  25,   7 },
-    { "Lobo Alfa",        48,  48,  20,  3,  70,  30,   8 },
-    { "Javali Selvagem",  52,  52,  20,  3,  98,  50,  10 },
-    { "Javali Selvagem",  52,  52,  20,  3,  98,  50,  10 },
-    { "Ogro",             60,  60,  22,  3,  95,  50,  11 },
-    { "Ogro",             67,  67,  22,  3,  95,  50,  11 },
-    { "Ogro Chefe",       74,  74,  25,  4, 150,  80,  15 },
-    { "Dragao",           82,  82,  32,  5, 200, 150,  20 }
+    { "Goblin",           25,  25,  6,   0,  40,  10,   4 },
+    { "Goblin Arqueiro",  25,  25,  8,  0,  44,  12,   5 },
+    { "Goblin Guerreiro", 28,  28,  8,  1,  44,  12,   5 },
+    { "Goblin de Elite",  32,  32,  12,  1,  55,  18,   6 },
+    { "Lobo Selvagem",    40,  40,  14,  2,  60,  25,   7 },
+    { "Lobo Alfa",        48,  48,  18,  3,  70,  30,   8 },
+    { "Javali Selvagem",  52,  52,  18,  3,  98,  50,  10 },
+    { "Javali Selvagem",  52,  52,  18,  3,  98,  50,  10 },
+    { "Ogro",             60,  60,  20,  3,  95,  50,  11 },
+    { "Ogro",             67,  67,  20,  3,  95,  50,  11 },
+    { "Ogro Chefe",       74,  74,  23,  4, 150,  80,  15 },
+    { "Dragao",           82,  82,  30,  5, 200, 150,  20 }
 };
 
 /* ═══════════════════════════════════════════════════
@@ -198,6 +198,7 @@ bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador) {
     }
 
     cout << "  Voce foi derrotado por " << inimigo.nome << ". Game Over.\n";
+    cin.get();
     return false;
 }
 
@@ -217,6 +218,7 @@ void arena(T &jogador, const std::string &nomeJogador) {
              << " | Shield: " << inimigo.shield << ")\n";
 
         cout << "O que deseja fazer?\n";
+        cin.get(); // Limpa o buffer para evitar problemas com getline() depois
         cout << "  1. Entrar em batalha\n";
         cout << "  2. Usar item\n";
         cout << "  3. Ir para a loja\n";
@@ -236,6 +238,7 @@ void arena(T &jogador, const std::string &nomeJogador) {
                 jogador.usarConsumivel(itemId, fs, crtRate);
             } else {
                 cout << "  Opção inválida!\n";
+                cin.get(); // Limpa o buffer
             }
         }
 
