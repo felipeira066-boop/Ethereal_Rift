@@ -2,7 +2,7 @@
 #include "library/Stats/HP.hpp"
 #include "library/character/Moves/Moves.hpp"
 #include "library/Stats/Mana.hpp"
-#include "library/Stats/Effects.hpp"
+#include "library/Systems/Itens/Effects.hpp"
 #include <iostream>
 #include <string>
 

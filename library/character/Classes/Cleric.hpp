@@ -3,7 +3,7 @@
 #include <map>
 
 #include "library/Stats/Stats_point.hpp"
-#include "library/Stats/Effects.hpp"
+#include "library/Systems/Itens/Effects.hpp"
 #include "library/Stats/level.hpp"
 #include "library/character/Moves/Moves.hpp"
 #include "library/Systems/Itens/Armaments.hpp"

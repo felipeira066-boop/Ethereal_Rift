@@ -1,14 +1,16 @@
 #pragma once
 #include <iostream>
 #include "library/assets/NPCs/NPCs-City/Merchanters.hpp"
+#include "library/Systems/Itens/Effects.hpp"
 
 using namespace std;
 
+int op;
 /* ═══════════════════════════════════════════════════
    Shop — onde o jogador pode comprar e vender itens
    (ainda em desenvolvimento)
 ═══════════════════════════════════════════════════ */
-class Buy {
+class Buy : protected setEffects{
    private:
       void HeavyWeapons(){
          cout << "  > Você escolheu comprar armas pesadas!\n";
@@ -42,7 +44,44 @@ class Buy {
 
       void HealthPotions(){
          cout << "  > Você escolheu comprar poções de vida!\n";
+         cin.get();
+         cout << "  > Essas poções restauram sua vida instantaneamente. Elas são essenciais para sobreviver às batalhas mais difíceis!\n";
+         cin.get();
+         cout << "  > Lembre-se de usá-las com sabedoria, pois o estoque é limitado e os inimigos podem ser implacáveis!\n";
+         cin.get();
+         cout << "  > Enfim, boa sorte em suas aventuras, e que as poções de vida sejam suas aliadas mais valiosas!\n";
+         cin.get();
+         cout << "  Eu tenho algumas poções de vida no estoque, veja se você quer alguma delas: \n";
          cin.ignore();
+         cout << "  [1] Poção de Vida Pequena (Restaura 20 HP) - 10 moedas\n"
+              << "  [2] Poção de Vida Média (Restaura 50 HP) - 25 moedas\n"
+              << "  [3] Poção de Vida Grande (Restaura 100 HP) - 50 moedas\n"
+              << "  [4] Voltar \n" 
+              << "  > ";
+
+         cin >> op;
+
+         if(op == 1) {
+            setPotion(PotionID::HEALTH_P);
+
+            cout << "  > Você comprou uma Poção de Vida Pequena!\n";
+            cin.ignore();
+         }
+
+         if(op == 2) {
+            setPotion(PotionID::HEALTH_M);
+            cout << "  > Você comprou uma Poção de Vida Média!\n";
+            cin.ignore();
+         }
+
+         if(op == 3) {
+            setPotion(PotionID::HEALTH_G);
+
+            cout << "  > Você comprou uma Poção de Vida Grande!\n";
+            cin.ignore();
+         }
+
+         buyPotions();
       }
 
       void ManaPotions(){
@@ -63,7 +102,7 @@ class Buy {
             << "  [3] Armas Magicas\n"
             << "  [4] Voltar \n" 
             << "  > ";
-         int op;
+      
          cin >> op;
          cin.ignore();
 
@@ -89,7 +128,7 @@ class Buy {
             << "  [3] Armaduras Magicas\n"
             << "  [4] Voltar \n" 
             << "  > ";
-         int op;
+      
          cin >> op;
 
          switch (op) {
@@ -114,7 +153,7 @@ class Buy {
             << "  [3] Poções de Força\n"
             << "  [4] Voltar \n" 
             << "  > ";
-         int op;
+      
          cin >> op;
 
          switch (op) {
@@ -149,7 +188,7 @@ public:
            << "  [2] Vender\n"
            << "  [3] Sair\n"
          << "  > ";
-      int op;
+   
       cin >> op;
 
       if(op == 1) setBuy();
@@ -168,7 +207,7 @@ public:
          << "  [3] Poções\n"
          << "  [4] Voltar \n" 
          << "  > ";
-      int op;
+   
       cin >> op;
 
       if(op == 1) buy.buyWeapons();
