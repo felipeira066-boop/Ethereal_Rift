@@ -8,6 +8,7 @@
 #include "library/character/Moves/Moves.hpp"
 #include "library/Systems/Itens/Armaments.hpp"
 #include "library/Systems/Itens/Armors.hpp"
+#include "library/Systems/Economy/inventory/myBag.hpp"
 
 /* ═══════════════════════════════════════════════════
    Cleric — herda HP, Mana, Exp e MoveSystem
@@ -17,6 +18,7 @@ class Cleric : virtual  public HP, virtual public Mana, public Exp, public MoveS
 private:
     stats          ClStats = {0, 0, 0, 0, 0};
     clericArmament armamento;
+    Inventory bag;
 
 public:
     Cleric() {
@@ -72,44 +74,4 @@ public:
     int      getMaxHP()       const { return (int)myStats.MaxHP; }
     uint16_t getCurrentLevel()const { return currentLevel; }
     uint16_t getCurrentMana() const { return CurrentMana; }
-
-
-    std::map<ConsumableID, int> inventory{  /* inventário de consumíveis (ID e quantidade) */
-        { ConsumableID::APPLE,        2 },   /* começa com 2 maçãs */
-        { ConsumableID::MELON_PIE,    0 },
-        { ConsumableID::ASSASIN_HERB, 0 },
-        { ConsumableID::STAR_FRUIT,   5 }
-    };
-
-    bool usarConsumivel(ConsumableID id, finalStats &fs, int &critRate) {
-        /* verifica se tem no inventário */
-        if (inventory.count(id) == 0 || inventory[id] <= 0) {
-            std::cout << "  Voce nao tem esse item!\n";
-            return false;
-        }
-
-        /* busca o efeito na tabela */
-        const Effects *eff = getEffect(id);
-        if (!eff) return false;
-
-        /* aplica o efeito */
-        EffectAplication(eff->Bonus, fs, critRate, *this, *this);
-
-        /* desconta do inventário */
-        inventory[id]--;
-        std::cout << "  Usou: " << eff->name
-                  << " — restam " << inventory[id] << "\n";
-        return true;
-    }
-
-    /* exibe inventário atual */
-    void exibirinventory() const {
-        std::cout << "\n  inventário:\n";
-        for (const auto &par : inventory) {
-            const Effects *eff = getEffect(par.first);
-            if (eff && par.second > 0)
-                std::cout << "  - " << eff->name
-                          << " x" << par.second << "\n";
-        }
-    }
 };

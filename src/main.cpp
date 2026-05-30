@@ -6,6 +6,7 @@
 /* definição das variáveis globais declaradas em Stats_point.hpp */
 stats    globalStats    = {0, 0, 0, 0, 0};
 raceStats globalRaceStats = {0, 0, 0, 0, 0};
+effectsBonus eff;
 
 /* ═══════════════════════════════════════════════════
    Seleção de classe
@@ -17,13 +18,13 @@ void printSep() {
 
 int escolherClasse() {
     printSep();
-    std::cout << "  Escolha sua classe:\n\n";
-    std::cout << "  1. Guerreiro  (DEF alta | FOR altos)\n";
-    std::cout << "  2. Caçador    (VEL alta | FOR media)\n";
-    std::cout << "  3. Mago       (INT alta | VIG baixo)\n";
-    std::cout << "  4. Clérigo    (VIG alto | pode curar)\n";
+    std::cout << "  ESCOLHA SUA CLASSE\n\n";
+    std::cout << "  [1] GUERREIRO        • Defesa e Força altas - Ideal para combate direto\n";
+    std::cout << "  [2] CAÇADOR          • Velocidade e Força medianas - Ataques rápidos\n";
+    std::cout << "  [3] MAGO             • Inteligência alta - Magia e dano de longo alcance\n";
+    std::cout << "  [4] CLÉRIGO          • Vigor alto - Pode se curar e ajudar aliados\n";
     printSep();
-    std::cout << "> ";
+    std::cout << "  Qual é sua escolha, Aventureiro? > ";
 
     int op;
     std::cin >> op;
@@ -32,12 +33,12 @@ int escolherClasse() {
 
 int escolherRaca(){
     printSep();
-    std::cout << "  Escolha sua raça:\n\n";
-    std::cout << "  1. Humano\n";
-    std::cout << "  2. Elfo\n";
-    std::cout << "  3. Anão\n";
+    std::cout << "  ESCOLHA SUA RAÇA \n\n";
+    std::cout << "  [1] HUMANO   • Versáteis e equilibrados - Bom para iniciantes\n";
+    std::cout << "  [2] ELFO     • Ágeis e mágicos - Velocidade e inteligência\n";
+    std::cout << "  [3] ANÃO     • Fortes e resistentes - Defesa e vigor\n";
     printSep();
-    std::cout << "> ";
+    std::cout << "  Qual raça você escolhe? > ";
 
     int op;
     std::cin >> op;
@@ -72,9 +73,9 @@ int main() {
 
     /* nome do personagem */
     std::string nome;
-    std::cout << "\n  Nome do personagem: ";
+    std::cout << "\n  Qual é seu nome, viajante? > ";
     std::getline(std::cin, nome);
-    if (nome.empty()) nome = "Heroi";
+    if (nome.empty()) nome = "Herói";
 
     /* Escolha das Raças */
     int raca = escolherRaca();
@@ -82,16 +83,22 @@ int main() {
     switch(raca){
         case 1: {
             Human humano;
-            std::cout << "  Qual sub-raça de humano você quer?\n";
-            std::cout << "  1. Humano da Selva (equilibrado + FOR)\n";
-            std::cout << "  2. Humano das Montanhas (equilibrado + VIG)\n";
+            std::cout << "\n  Escolha sua linhagem de Humano:\n\n";
+            std::cout << "  [1]  Humano da Selva      • Equilibrado com bônus em Força\n";
+            std::cout << "  [2]  Humano das Montanhas • Equilibrado com bônus em Vigor\n";
             std::cout << "  > ";
             int subRaca;
             std::cin >> subRaca;
-            if(subRaca == 1) humano.beRace(id_subHuman::JUNGLE_HUMAN);
-            else if(subRaca == 2) humano.beRace(id_subHuman::MOUNTAIN_HUMAN);
+            if(subRaca == 1) {
+                humano.beRace(id_subHuman::JUNGLE_HUMAN);
+                std::cout << "   Você é um Humano da Selva! Prepare-se para as aventuras...\n";
+            }
+            else if(subRaca == 2) {
+                humano.beRace(id_subHuman::MOUNTAIN_HUMAN);
+                std::cout << "   Você é um Humano das Montanhas! Sua resistência é incomparável.\n";
+            }
             else {
-                std::cout << "  Sub-raça inválida, usando Humano da Selva.\n";
+                std::cout << "   Escolha inválida! Assumindo Humano da Selva.\n";
                 humano.beRace(id_subHuman::JUNGLE_HUMAN);
             }
 
@@ -101,18 +108,27 @@ int main() {
 
         case 2:{
             Elf elfo;
-            std::cout << "  Qual sub-raça de elfo você quer?\n";
-            std::cout << "  1. Elfo de Sangue (bônus em VIG e INT)\n";
-            std::cout << "  2. Elfo das Montanhas (bônus em VEL e FOR)\n";
-            std::cout << "  3. Elfo das Neves (bônus em VIG e VEL)\n";
+            std::cout << "\n  Escolha sua linhagem de Elfo:\n\n";
+            std::cout << "  [1]  Elfo de Sangue        • Vigor e Inteligência elevados\n";
+            std::cout << "  [2]  Elfo das Montanhas   • Velocidade e Força superiores\n";
+            std::cout << "  [3]  Elfo das Neves       • Resistência e Velocidade aprimoradas\n";
             std::cout << "  > ";
             int subRaca;
             std::cin >> subRaca;
-            if(subRaca == 1) elfo.beRace(id_subElf::BOOD_ELF);
-            else if(subRaca == 2) elfo.beRace(id_subElf::MOUNTAIN_ELF);
-            else if(subRaca == 3) elfo.beRace(id_subElf::SNOW_ELF);
+            if(subRaca == 1) {
+                elfo.beRace(id_subElf::BOOD_ELF);
+                std::cout << "   Você é um Elfo de Sangue! Poder ancestral flui por suas veias.\n";
+            }
+            else if(subRaca == 2) {
+                elfo.beRace(id_subElf::MOUNTAIN_ELF);
+                std::cout << "   Você é um Elfo das Montanhas! A velocidade é sua aliada.\n";
+            }
+            else if(subRaca == 3) {
+                elfo.beRace(id_subElf::SNOW_ELF);
+                std::cout << "   Você é um Elfo das Neves! Frio e graça definem você.\n";
+            }
             else {
-                std::cout << "  Sub-raça inválida, usando Elfo de Sangue.\n";
+                std::cout << "   Escolha inválida! Assumindo Elfo de Sangue.\n";
                 elfo.beRace(id_subElf::BOOD_ELF);   
             }
 
@@ -123,18 +139,27 @@ int main() {
 
         case 3: {
             Dwarf anao;
-            std::cout << "  Qual sub-raça de anão você quer?\n";
-            std::cout << "  1. Anão Ferreiro (bônus em VIG e DEF)\n";
-            std::cout << "  2. Anão das Colinas (bônus em DEF e FOR)\n";
-            std::cout << "  3. Anão do Subsolo (bônus em VIG e FOR)\n";
+            std::cout << "\n  Escolha sua linhagem de Anão:\n\n";
+            std::cout << "  [1]  Anão Ferreiro       • Vigor e Defesa superiores\n";
+            std::cout << "  [2]  Anão das Colinas    • Defesa e Força aumentadas\n";
+            std::cout << "  [3]  Anão do Subsolo     • Vigor e Força das profundezas\n";
             std::cout << "  > ";
             int subRaca;
             std::cin >> subRaca;
-            if(subRaca == 1) anao.beRace(id_subDwarf::FORGE_DWARF);
-            else if(subRaca == 2) anao.beRace(id_subDwarf::COULINS_DWARF);
-            else if(subRaca == 3) anao.beRace(id_subDwarf::UNDERGROUND_DWARF);
+            if(subRaca == 1) {
+                anao.beRace(id_subDwarf::FORGE_DWARF);
+                std::cout << "   Você é um Anão Ferreiro! Seus músculos podem quebrar montanhas.\n";
+            }
+            else if(subRaca == 2) {
+                anao.beRace(id_subDwarf::COULINS_DWARF);
+                std::cout << "   Você é um Anão das Colinas! Defesa inabalável é sua marca.\n";
+            }
+            else if(subRaca == 3) {
+                anao.beRace(id_subDwarf::UNDERGROUND_DWARF);
+                std::cout << "   Você é um Anão do Subsolo! Poder primordial corre em suas veias.\n";
+            }
             else {
-                std::cout << "  Sub-raça inválida, usando Anão Ferreiro.\n";
+                std::cout << "   Escolha inválida! Assumindo Anão Ferreiro.\n";
                 anao.beRace(id_subDwarf::FORGE_DWARF);
             }
             globalRaceStats = anao.getRaceStats();
@@ -172,7 +197,7 @@ int main() {
             break;
         }
         default: {
-            std::cout << "Classe invalida — iniciando como Guerreiro.\n";
+            std::cout << "   Classe inválida! Você despertará como um Guerreiro...\n";
             Warrior guerreiro;
             arena(guerreiro, nome);
             break;

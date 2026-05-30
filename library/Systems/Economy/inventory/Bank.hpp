@@ -13,73 +13,73 @@ int recompensa; //dinheiro recebido com baús, premios e moedas openworld
 bool openMyWallet(){
     int op;
     int valor;
-    cout << "  > Você abriu a sua carteira...\n"
+     cout << "  > Você abriu a sua carteira...\n"
          << "  > Você deseja ver o seu dinheiro? [Y/n]\n"
          << "  > ";
 
-    cin >> op;
+     cin >> op;
 
     if(op == 'N' || op == 'n'){
-        cout << "  > Você fechou a carteira.\n";
-        cin.ignore();
+          cout << "  > Você fechou a carteira.";
+          cin.ignore();
         return false;
     }
 
-    cout << "  > Você tem " << CurrentCoin << " moedas!\n";
-    cin.ignore();
+     cout << "  > Você tem " << CurrentCoin << " moedas!";
+     cin.ignore();
     
-    cout << "  > Você deseja depositar/sacar seu dinheiro? [D/s]\n"
+     cout << "  > Você deseja depositar/sacar seu dinheiro? [D/s]\n"
          << "  > ";
 
-    cin >> op;
+     cin >> op;
 
     if(op == 'D' || op == 'd'){
-        cout << "  > Quanto você deseja depositar? (Digite um valor positivo)\n"
+          cout << "  > Quanto você deseja depositar? (Digite um valor positivo)\n"
              << "  > ";
-        cin >> valor;
+          cin >> valor;
 
         if(valor > CurrentCoin){
-            cout << "  > Você não tem dinheiro suficiente para depositar essa quantia.\n";
+               cout << "  > Você não tem dinheiro suficiente para depositar essa quantia.";
 
-            cin.ignore();
+               cin.ignore();
             return false;
         }
         CurrentCoin -= valor;
         CurrentBank += valor;
-        cout << "  > Você depositou " << valor
+          cout << "  > Você depositou " << valor
              << " moedas de prata. Saldo atual na carteira: " << CurrentCoin 
-             << " moedas de prata.\n";
-        cin.ignore();
-        cout << " Saldo atual no banco: " << CurrentBank 
-             << " moedas de prata.\n";
-        cin.ignore();
+             << " moedas de prata.";
+          cin.ignore();
+          cout << " Saldo atual no banco: " << CurrentBank 
+             << " moedas de prata.";
+          cin.ignore();
     } else {
-        cout << "  > Saldo atual no banco: " << CurrentBank 
-             << " moedas de prata.\n";
-        cin.get();
-        cout << "  > Quanto você deseja sacar? (Digite um valor positivo)\n"
+          cout << "  > Saldo atual no banco: " << CurrentBank 
+             << " moedas de prata.";
+          cin.get();
+          cout << "  > Quanto você deseja sacar? (Digite um valor positivo)\n"
              << "  > ";
-        cin >> valor;
-        cin.ignore();
+          cin >> valor;
+          cin.ignore();
 
         if(valor > CurrentBank){
-            cout << "  > Você não tem dinheiro suficiente para sacar essa quantia.\n";
+               cout << "  > Você não tem dinheiro suficiente para sacar essa quantia.";
 
-            cin.ignore();
+               cin.ignore();
             return false;
         } else {
             CurrentBank -= valor;
             CurrentCoin += valor;
-            cout << "  > Você sacou " << valor
-                 << " moedas de prata. \n";
-            cin.get();
-            cout << "Saldo atual na carteira: " << CurrentCoin
-                 << " moedas de prata.\n";
-            cin.get();
-            cout << " Saldo atual no banco: " << CurrentBank 
-                 << " moedas de prata.\n";
+               cout << "  > Você sacou " << valor
+                 << " moedas de prata. ";
+               cin.get();
+               cout << "Saldo atual na carteira: " << CurrentCoin
+                 << " moedas de prata.";
+               cin.get();
+               cout << " Saldo atual no banco: " << CurrentBank 
+                 << " moedas de prata.";
 
-            cin.ignore();
+               cin.ignore();
         }
     }
     return true;
@@ -87,16 +87,16 @@ bool openMyWallet(){
 
 void gainCoin(int recompensa){
     CurrentCoin += recompensa;
-    cout << "  > Você ganhou " << recompensa 
-         << " moedas de prata! Saldo atual: " << CurrentCoin 
-         << " moedas de prata.\n";
-    cin.ignore();
+     cout << "  > Você ganhou " << recompensa 
+         << " moedas de prata! \n  Saldo atual: " << CurrentCoin 
+         << " moedas de prata.";
+     cin.ignore();
 }
 
 void lostCoin(int valor){
     CurrentCoin -= valor;
-    cout << "  > Você perdeu " << valor 
-         << " moedas de prata! Saldo atual: " << CurrentCoin 
-         << " moedas de prata.\n";
-    cin.ignore();
+     cout << "  > Você perdeu " << valor 
+         << " moedas de prata! \n  Saldo atual: " << CurrentCoin 
+         << " moedas de prata.";
+     cin.ignore();
 }

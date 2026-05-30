@@ -3,6 +3,7 @@
 #include "library/character/Moves/Moves.hpp"
 #include "library/Stats/Mana.hpp"
 #include "library/Systems/Itens/Effects.hpp"
+#include "library/Systems/Economy/inventory/myBag.hpp"
 #include <iostream>
 #include <string>
 
@@ -23,6 +24,7 @@ struct EnemyData {
     uint32_t    coinRecompensa;
     int16_t     speed;
     int         isAlive() const { return hp > 0; }
+    int         ID;
 
 };
 
@@ -32,18 +34,18 @@ struct EnemyData {
 
 inline std::vector<EnemyData> arenaInimigos = {
     /* nome               hp  hpmax dmg shl exp coin  vel*/
-    { "Goblin",           25,  25,  6,   0,  40,  10,   4 },
-    { "Goblin Arqueiro",  25,  25,  8,  0,  44,  12,   5 },
-    { "Goblin Guerreiro", 28,  28,  8,  1,  44,  12,   5 },
-    { "Goblin de Elite",  32,  32,  12,  1,  55,  18,   6 },
-    { "Lobo Selvagem",    40,  40,  14,  2,  60,  25,   7 },
-    { "Lobo Alfa",        48,  48,  18,  3,  70,  30,   8 },
-    { "Javali Selvagem",  52,  52,  18,  3,  98,  50,  10 },
-    { "Javali Selvagem",  52,  52,  18,  3,  98,  50,  10 },
-    { "Ogro",             60,  60,  20,  3,  95,  50,  11 },
-    { "Ogro",             67,  67,  20,  3,  95,  50,  11 },
-    { "Ogro Chefe",       74,  74,  23,  4, 150,  80,  15 },
-    { "Dragao",           82,  82,  30,  5, 200, 150,  20 }
+    { "Goblin",           25,  25,  6,   0,  40,  10,   4 , 1},
+    { "Goblin Guerreiro", 28,  28,  8,   1,  44,  12,   5 , 2},
+    { "Goblin Arqueiro",  25,  25,  8,   0,  44,  12,   5 , 3},
+    { "Goblin de Elite",  32,  32,  12,  1,  55,  18,   6 , 4},
+    { "Lobo Selvagem",    40,  40,  14,  2,  60,  25,   7 , 5},
+    { "Javali Selvagem",  52,  52,  18,  3,  98,  50,  10 , 6},
+    { "Lobo Alfa",        48,  48,  18,  3,  70,  30,   8 , 7},
+    { "Javali Selvagem",  52,  52,  18,  3,  98,  50,  10 , 8},
+    { "Ogro",             60,  60,  20,  3,  95,  50,  11 , 9},
+    { "Ogro",             67,  67,  20,  3,  95,  50,  11 , 10},
+    { "Ogro Chefe",       74,  74,  23,  4, 150,  80,  15 , 11},
+    { "Dragao",           82,  82,  30,  5, 200, 150,  20 , 12}
 };
 
 /* ═══════════════════════════════════════════════════
@@ -152,8 +154,24 @@ bool MonsterTurn(M &jogador, EnemyData &inimigo){
 
 template <typename B>
 
-bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador) {
-    int turno        = 1;
+bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador, Inventory& bag) {
+    int turno = 1;
+    effectsBonus eff;
+
+    if (inimigo.ID == 3 || inimigo.ID == 6 || inimigo.ID == 9 || inimigo.ID == 12) {
+            cout << "  > Você quer visitar a loja da cidade? (s/n)\n"
+            << "  > ";
+            char resposta;
+            cin >> resposta;
+
+            if (resposta == 's' || resposta == 'S') {
+                Shop shop(bag);
+                shop.initShop();
+            }
+        }
+
+         cout << "  > Pressione Enter para iniciar a batalha...";
+         cin.get();
 
     cout << "\n========================================\n";
     cout << "  BATALHA: " << nomeJogador << " vs " << inimigo.nome << "\n";
@@ -167,7 +185,25 @@ bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador) {
         printBarraExp( jogador.getExp(), jogador.getExpMax());
 
         printBarraHP(inimigo.nome, inimigo.hp, inimigo.hpmax);
-        
+
+        cout << "  1. Entrar em batalha\n";
+        cout << "  2. Abrir Inventario\n";
+        cout << "  > ";
+
+        int esc;
+        cin >> esc;
+
+        if (esc == 2) {
+            finalStats fs = jogador.getStats();
+            int critical_rate = 0;
+            bag.menuBag(eff, fs, critical_rate, static_cast<HP&>(jogador), static_cast<Mana&>(jogador));
+            
+            MonsterTurn(jogador, inimigo);
+            jogador.CurrentMana += 2;
+            turno++;
+            continue;
+        }
+
         if(jogador.getStats().Speed > (uint32_t)inimigo.speed){
             PlayerTurn(jogador, inimigo, nomeJogador);
 
@@ -180,7 +216,6 @@ bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador) {
 
             PlayerTurn(jogador, inimigo, nomeJogador);
         }
-
         jogador.CurrentMana += 2;
 
         turno++;
@@ -193,12 +228,14 @@ bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador) {
     if (!inimigo.isAlive()) {
         cout << "  Voce derrotou " << inimigo.nome << "!\n";
         cout << "  + " << inimigo.expRecompensa  << " EXP\n";
-        cout << "  + " << inimigo.coinRecompensa << " moedas\n";
+        gainCoin(inimigo.coinRecompensa);
         return true;
     }
 
     cout << "  Voce foi derrotado por " << inimigo.nome << ". Game Over.\n";
     cin.get();
+    cout << "  RECORD: " << inimigo.ID <<  " inimigos derrotados.\n";
+
     return false;
 }
 
@@ -208,46 +245,20 @@ bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador) {
 
 template <typename T>
 void arena(T &jogador, const std::string &nomeJogador) {
-    finalStats fs = jogador.getStats(); // Ou jogador.hp.getStats() se mudar a arquitetura
-    int crtRate = 0; // Ou o valor vindo do sistema de status do seu jogador
+    jogador.getStats(); // Ou jogador.hp.getStats() se mudar a arquitetura
+    Inventory playerInventory; // Criar inventário compartilhado
+
     for (auto &inimigo : arenaInimigos) {
+        
 
         cout << "\nProximo desafio: " << inimigo.nome
              << " (HP: " << inimigo.hp
              << " | Dano: " << inimigo.damage
              << " | Shield: " << inimigo.shield << ")\n";
 
-        cout << "O que deseja fazer?\n";
-        cin.get(); // Limpa o buffer para evitar problemas com getline() depois
-        cout << "  1. Entrar em batalha\n";
-        cout << "  2. Usar item\n";
-        cout << "  3. Ir para a loja\n";
-        cout << "  > ";
+        
 
-        int esc;
-        cin >> esc;
-
-        if (esc == 2) {
-            jogador.exibirinventory();
-            cout << "Digite o numero do item que deseja usar (1-" << jogador.inventory.size() << "): ";
-            int itemOp;
-            cin >> itemOp;
-
-            if (itemOp >= 1 && itemOp <= static_cast<int>(jogador.inventory.size())) {
-                ConsumableID itemId = static_cast<ConsumableID>(itemOp);
-                jogador.usarConsumivel(itemId, fs, crtRate);
-            } else {
-                cout << "  Opção inválida!\n";
-                cin.get(); // Limpa o buffer
-            }
-        }
-
-        if(esc == 3){
-            Shop shop;
-            shop.initShop();
-        }
-
-        if (!battle(jogador, inimigo, nomeJogador))
+        if (!battle(jogador, inimigo, nomeJogador, playerInventory))
             return;
 
         /* level up após batalha */
