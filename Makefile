@@ -4,7 +4,7 @@ CXXFLAGS := -Wall -pipe -I. $(shell sdl2-config --cflags)
 
 LDFLAGS := $(shell sdl2-config --libs) -lSDL2_mixer
 
-TARGET := test
+TARGET := Ethereal_Rift.exe
 
 SRC_DIR := src 
 
