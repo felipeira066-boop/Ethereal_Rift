@@ -15,6 +15,7 @@ class Mage : virtual public HP, virtual public Mana, public Exp, public MoveSyst
 private:
     stats          MgStats = {0, 0, 0, 0, 0};
     mageArmament armamento;
+    Wizard_armor armadura;
     Inventory bag;
 
 public:
@@ -63,6 +64,10 @@ public:
     /* equipar arma */
     bool equipar(mage_ArmamentID id) {
         return armamento.equip(id);
+    }
+
+    bool Armor(Wizard_armorID id){
+        return armadura.equip(id);
     }
 
     int      getMaxHP()       const { return (int)myStats.MaxHP; }

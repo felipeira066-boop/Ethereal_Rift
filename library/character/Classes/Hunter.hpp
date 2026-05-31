@@ -15,6 +15,7 @@ class Hunter : virtual public HP, virtual public Mana, public Exp, public MoveSy
 private:
     stats          HuStats = {0, 0, 0, 0, 0};
     hunterArmament armamento;
+    Arrow_armor   armadura;
     Inventory bag;
 
 public:
@@ -66,6 +67,10 @@ public:
     /* equipar arma */
     bool equipar(hunter_ArmamentID id) {
         return armamento.equip(id);
+    }
+
+    bool Armor(Arrow_armorID id){
+        return armadura.equip(id);
     }
 
     int      getMaxHP()       const { return (int)myStats.MaxHP; }

@@ -16,7 +16,7 @@ protected:
 
     /* EXP necessária para o próximo nível */
     uint32_t expParaProximoNivel() const {
-        double exp = 15.0 * std::pow(1.2, currentLevel);
+        double exp = 80.0 * std::pow(1.2, currentLevel);
         return static_cast<uint32_t>(exp);
     }
 

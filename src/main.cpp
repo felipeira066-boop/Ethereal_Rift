@@ -109,7 +109,7 @@ int main() {
         case 2:{
             Elf elfo;
             std::cout << "\n  Escolha sua linhagem de Elfo:\n\n";
-            std::cout << "  [1]  Elfo de Sangue        • Vigor e Inteligência elevados\n";
+            std::cout << "  [1]  Elfo de Sangue       • Vigor e Inteligência elevados\n";
             std::cout << "  [2]  Elfo das Montanhas   • Velocidade e Força superiores\n";
             std::cout << "  [3]  Elfo das Neves       • Resistência e Velocidade aprimoradas\n";
             std::cout << "  > ";

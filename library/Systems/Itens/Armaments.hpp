@@ -33,7 +33,7 @@ class ArmamentBase{
         bool equip(T id){
             long unsigned int index = static_cast <int> (id);
 
-            if(index < 0 || index >= ArmamentsTable.size()){
+            if(index < 0 || index >= ArmamentsTable.size()) {
                 std::cout << "Equipamento invalido!\n";
                 return false;
             }
@@ -149,9 +149,9 @@ class clericArmament : public ArmamentBase <cleric_ArmamentID>{
             ArmamentsTable = {
                 /*          id                       name                   vig def vel for int*/
                 {cleric_ArmamentID::NONE,           "NADA",                  {0,  0,  0,  0,  0}},
-                {cleric_ArmamentID::MACE,           "Maça",                  {2,  4,  0,  1,  0}},
+                {cleric_ArmamentID::MACE,           "Maça",                  {2,  4,  0,  0,  0}},
                 {cleric_ArmamentID::WAR_HAMMER,     "Martelo de Guerra",     {2,  3,  0,  2,  0}},
-                {cleric_ArmamentID::FLAIL,          "Mangual",               {1,  2,  1,  2,  0}}
+                {cleric_ArmamentID::FLAIL,          "Mangual",               {0,  2,  1,  2,  0}}
             };
             CurrentArmament = ArmamentsTable[0];
         }

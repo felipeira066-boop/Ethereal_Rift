@@ -15,6 +15,7 @@ class Warrior : virtual public HP, virtual public Mana, public Exp, public MoveS
 private:
     stats          WaStats = {0, 0, 0, 0, 0};
     warriorArmament armamento;
+    Warrior_armor armadura;
     Inventory bag;
 
 public:
@@ -64,6 +65,10 @@ public:
     /* equipar arma */
     bool equipar(warrior_ArmamentID id) {
         return armamento.equip(id);
+    }
+
+    bool Armor(Warrior_armorID id){
+        return armadura.equip(id);
     }
 
     int      getMaxHP()       const { return (int)myStats.MaxHP; }

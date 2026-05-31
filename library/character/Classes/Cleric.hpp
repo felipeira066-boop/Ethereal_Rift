@@ -18,6 +18,7 @@ class Cleric : virtual  public HP, virtual public Mana, public Exp, public MoveS
 private:
     stats          ClStats = {0, 0, 0, 0, 0};
     clericArmament armamento;
+    Cleric_armor armadura;
     Inventory bag;
 
 public:
@@ -71,7 +72,11 @@ public:
         return armamento.equip(id);
     }
 
+    bool Armor(Cleric_armorID id) {
+        return armadura.equip(id);
+    }
+
     int      getMaxHP()       const { return (int)myStats.MaxHP; }
-    uint16_t getCurrentLevel()const { return currentLevel; }
+    uint16_t getCurrentLevel()const { return Exp::currentLevel; }
     uint16_t getCurrentMana() const { return CurrentMana; }
 };

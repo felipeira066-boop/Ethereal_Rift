@@ -4,11 +4,11 @@
 
 using namespace std;
 
-int CurrentCoin;
+int CurrentCoin = 0;
 
-int CurrentBank;
+int CurrentBank = 0;
 
-int recompensa; //dinheiro recebido com baús, premios e moedas openworld
+int recompensa = 0; //dinheiro recebido com baús, premios e moedas openworld
 
 bool openMyWallet(){
     int op;
