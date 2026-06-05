@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
-#include "src/bibliotecas.hpp"
-#include "library/assets/sounds/background.hpp"
+#include "bibliotecas.hpp"
 
 /* definição das variáveis globais declaradas em Stats_point.hpp */
 stats    globalStats    = {0, 0, 0, 0, 0};
@@ -165,6 +164,10 @@ int main() {
             globalRaceStats = anao.getRaceStats();
             break;
         }
+
+        default:
+            std::cout << ("  ! Digito Errado ! \n");
+            return 1;
     }
 
     /* escolha da classe */
