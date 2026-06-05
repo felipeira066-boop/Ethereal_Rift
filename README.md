@@ -103,7 +103,7 @@ Este projeto está em **desenvolvimento ativo**. Consulte [STRUCTURE.md](STRUCTU
 
 ## 👨‍💻 Autor
 
-Criado por [Seu Nome]
+Criado por [Felipe Carvalho de Siqueira]
 
 ---
 
