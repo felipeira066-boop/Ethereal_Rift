@@ -59,7 +59,7 @@ inline void printBarraHP(const std::string &nome, int current, int max) {
 
     cout << "  " << nome << "\n   HP-[";
     for (int i = 0; i < total; i++)
-        cout << (i < cheios ? "\33[31m❤\33[0m " : "▪ ");
+        cout << (i < cheios ? "\33[31m♥\33[0m " : "▪ ");
     cout << "] " << current << "/" << max << std::endl;
 }
 
@@ -73,7 +73,7 @@ inline void printBarraMana( int current, int max) {
 
     cout << "   Mana-[";
     for (int i = 0; i < total; i++)
-        cout << (i < cheios ? "\33[36m◆\33[0m" : "▪ ");
+        cout << (i < cheios ? "\33[36m♦\33[0m" : "▪ ");
     cout << "] " << current << "/" << max << std::endl;
 }
 
@@ -169,7 +169,7 @@ bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador, Inve
                 Shop shop(bag);
                 shop.initShop();
             }
-        }
+    }
 
          cout << "  > Pressione Enter para iniciar a batalha...";
          cin.get();
@@ -187,7 +187,7 @@ bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador, Inve
 
         printBarraHP(inimigo.nome, inimigo.hp, inimigo.hpmax);
 
-        cout << "  1. Entrar em batalha\n";
+        cout << "  1. Atacar\n";
         cout << "  2. Abrir Inventario\n";
         cout << "  > ";
 

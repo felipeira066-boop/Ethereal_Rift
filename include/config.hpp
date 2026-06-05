@@ -58,10 +58,10 @@ constexpr int MAX_GOLD = 999999;
 // Debug
 #ifdef DEBUG
     #define LOG(x) std::cout << "[LOG] " << x << std::endl
-    #define ERROR(x) std::cerr << "[ERROR] " << x << std::endl
+    #define GAME_ERROR(x) std::cerr << "[ERROR] " << x << std::endl
 #else
     #define LOG(x)
-    #define ERROR(x)
+    #define GAME_ERROR(x)
 #endif
 
 // Clamp (limita valor entre min e max)

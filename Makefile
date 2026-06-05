@@ -1,8 +1,8 @@
-CXX := g++
+CXX := x86_64-w64-mingw32-g++
 
 CXXFLAGS := -Wall -pipe -I. -Iinclude $(shell sdl2-config --cflags)
 
-LDFLAGS := $(shell sdl2-config --libs) -lSDL2_mixer
+LDFLAGS := -static-libgcc -static-libstdc++
 
 TARGET := builds/Ethereal_Rift.exe
 
@@ -17,7 +17,7 @@ all: $(TARGET)
 $(SRCS): $(shell find include -name "*.hpp")
 
 $(TARGET) : $(SRCS)
-	$(CXX) $(CXXFLAGS) $^ -o $(TARGET) 
+	$(CXX) $(CXXFLAGS) $^ -o $(TARGET) $(LDFLAGS)
 
 clean:
 	rm -f $(TARGET)

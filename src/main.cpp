@@ -1,4 +1,6 @@
 #include <iostream>
+#include <windows.h>
+#include <locale>
 #include <string>
 #include "bibliotecas.hpp"
 
@@ -49,6 +51,14 @@ int escolherRaca(){
 ═══════════════════════════════════════════════════ */
 
 int main() {
+
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
+    system("chcp 65001 > nul");
+
+    std::setlocale(LC_ALL, ".UTF-8");
+
     srand(time(NULL));
 
     printSep();
@@ -206,6 +216,8 @@ int main() {
             break;
         }
     }
+
+    
 
     return 0;
 }
