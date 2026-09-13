@@ -43,6 +43,7 @@ class State{
         
         //pure virtual     
         virtual void updateMousePosition();
+        virtual void handleEvent(const sf::Event& event);
         virtual void updateInput(const float& dt) = 0;
         virtual void update(const float& dt) = 0;
         virtual void render(sf::RenderTarget* target = NULL) = 0;

@@ -8,25 +8,25 @@ Button::Button(
                 sf::Color hoverColor,
                 sf::Color activeColor
                 )
+    : buttonStates(BTN_IDLE),
+      font(font),
+      text(*font, "", 30),
+      idleColor(idleColor),
+      hoverColor(hoverColor),
+      activeColor(activeColor)
 {
-    this->buttonStates = BTN_IDLE;
-
-    this->shape.setPosition(sf::Vector2f(x,y));
+    this->shape.setPosition(sf::Vector2f(x, y));
     this->shape.setSize(sf::Vector2f(width, height));
 
-    this->font = font;
     this->text.setFont(*this->font);
     this->text.setString(text);
     this->text.setFillColor(sf::Color::White);
-    this->text.setCharacterSize(12);
-    this->text.setPosition(
-        this->shape.getPosition().x + (this->shape.getGlobalBounds().width / 2.f) - this->text.getGlobalBounds().width / 2.f,
-        this->shape.getPosition().y + (this->shape.getGlobalBounds().height / 2.f) - this->text.getGlobalBounds().height / 2.f
-    );
-
-    this->idleColor = idleColor;
-    this->hoverColor = hoverColor;
-    this->activeColor = activeColor;
+    this->text.setCharacterSize(24);
+    const sf::FloatRect bounds = this->shape.getGlobalBounds();
+    this->text.setPosition(sf::Vector2f(
+        this->shape.getPosition().x + (bounds.size.x / 2.f) - (this->text.getGlobalBounds().size.x / 2.f),
+        this->shape.getPosition().y + (bounds.size.y / 2.f) - (this->text.getGlobalBounds().size.y / 2.f)
+    ));
 
     this->shape.setFillColor(this->idleColor);
 }
@@ -46,7 +46,7 @@ void Button::update(const sf::Vector2f mousePos){
         this->buttonStates = BTN_HOVER;
 
         //pressed
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
             this->buttonStates = BTN_ACTIVE;
         }
     }

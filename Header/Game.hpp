@@ -7,7 +7,6 @@ class Game{
     private:
         //Variable
         sf::RenderWindow *window;
-        sf::Event event;
         std::vector<sf::VideoMode> videoModes;
         sf::ContextSettings windowSettings;
         bool fullscreen;

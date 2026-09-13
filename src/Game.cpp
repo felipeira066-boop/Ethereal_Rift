@@ -14,29 +14,26 @@ void Game::initWindow(){
     std::string title="None";
     sf::VideoMode window_bounds = sf::VideoMode::getDesktopMode();
     bool fullscreen = false;
-    unsigned framerate_limit;
-    bool vertical_sync_enabled;
+    unsigned framerate_limit = 60;
+    bool vertical_sync_enabled = false;
     unsigned antialiasing_level = 0;
 
     if(ifs.is_open()){
         std::getline(ifs, title);
-        ifs >> window_bounds.width >> window_bounds.height;
-        ifs>> fullscreen;
+        ifs >> window_bounds.size.x >> window_bounds.size.y;
+        ifs >> fullscreen;
         ifs >> framerate_limit;
         ifs >> vertical_sync_enabled;
         ifs >> antialiasing_level;
     }
 
     this->fullscreen = fullscreen;
-    this->windowSettings.antialiasingLevel = antialiasing_level;
+    this->windowSettings.antiAliasingLevel = antialiasing_level;
     if(this->fullscreen)
-        this->window = new sf::RenderWindow(window_bounds,
-         title, sf::Style::Fullscreen , 
-         this->windowSettings);
+        this->window = new sf::RenderWindow(window_bounds, title, sf::State::Fullscreen, this->windowSettings);
     else
-        this->window = new sf::RenderWindow(window_bounds, title,
-         sf::Style::Titlebar | sf::Style::Close, 
-         this->windowSettings); 
+        this->window = new sf::RenderWindow(window_bounds, title, sf::State::Windowed, this->windowSettings);
+
     this->window->setFramerateLimit(framerate_limit);
     this->window->setVerticalSyncEnabled(vertical_sync_enabled);
 }
@@ -91,11 +88,13 @@ void Game::updateDt(){
 }
 
 void Game::updateSFMLEvents(){
-
-    while (this->window->pollEvent(this->event))
+    while (const std::optional<sf::Event> event = this->window->pollEvent())
     {
-        if (this->event.type == sf::Event::Closed)
+        if (event->is<sf::Event::Closed>())
             this->window->close();
+
+        if (!this->states.empty())
+            this->states.top()->handleEvent(*event);
     }
 }
 

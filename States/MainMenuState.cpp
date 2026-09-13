@@ -33,7 +33,7 @@ void MainMenuState::initKeybinds(){
 }
 
 void MainMenuState::initFonts(){
-    if(!this->font.loadFromFile("Fonts/GeistPixel-Regular-VariableFont_ELSH.ttf")){
+    if(!this->font.openFromFile("Fonts/GeistPixel-Regular-VariableFont_ELSH.ttf")){
         throw("ERROR in the Font Loading!\n");
     }
 }
