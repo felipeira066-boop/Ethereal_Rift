@@ -28,14 +28,43 @@ void Game::initWindow(){
     }
 
     this->fullscreen = fullscreen;
+    if (this->fullscreen)
+        window_bounds = sf::VideoMode::getDesktopMode();
+
     this->windowSettings.antiAliasingLevel = antialiasing_level;
     if(this->fullscreen)
         this->window = new sf::RenderWindow(window_bounds, title, sf::State::Fullscreen, this->windowSettings);
     else
         this->window = new sf::RenderWindow(window_bounds, title, sf::State::Windowed, this->windowSettings);
 
+    this->updateView(this->window->getSize());
     this->window->setFramerateLimit(framerate_limit);
     this->window->setVerticalSyncEnabled(vertical_sync_enabled);
+}
+
+void Game::updateView(const sf::Vector2u& windowSize){
+    constexpr float viewWidth = 1280.f;
+    constexpr float viewHeight = 720.f;
+    if (windowSize.x == 0 || windowSize.y == 0)
+        return;
+
+    sf::FloatRect viewport({0.f, 0.f}, {1.f, 1.f});
+    const float windowRatio =
+        static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y);
+    const float viewRatio = viewWidth / viewHeight;
+
+    if (windowRatio > viewRatio) {
+        viewport.size.x = viewRatio / windowRatio;
+        viewport.position.x = (1.f - viewport.size.x) / 2.f;
+    } else {
+        viewport.size.y = windowRatio / viewRatio;
+        viewport.position.y = (1.f - viewport.size.y) / 2.f;
+    }
+
+    this->view.setSize(sf::Vector2f(viewWidth, viewHeight));
+    this->view.setCenter(sf::Vector2f(viewWidth / 2.f, viewHeight / 2.f));
+    this->view.setViewport(viewport);
+    this->window->setView(this->view);
 }
 
 void Game::initKeys(){
@@ -92,6 +121,9 @@ void Game::updateSFMLEvents(){
     {
         if (event->is<sf::Event::Closed>())
             this->window->close();
+
+        if (const sf::Event::Resized* resized = event->getIf<sf::Event::Resized>())
+            this->updateView(resized->size);
 
         if (!this->states.empty())
             this->states.top()->handleEvent(*event);

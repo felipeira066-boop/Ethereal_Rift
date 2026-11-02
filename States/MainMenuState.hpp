@@ -7,7 +7,6 @@ class MainMenuState : public State
 {
     private:
         //variable
-        sf::Texture bgTexture;
         sf::RectangleShape background;
         sf::Font font;
 

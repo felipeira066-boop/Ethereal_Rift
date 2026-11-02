@@ -1,4 +1,5 @@
 #include "Button.hpp"
+#include "Header/Palette.hpp"
 
 Button::Button(
                 float x, float y,
@@ -20,7 +21,7 @@ Button::Button(
 
     this->text.setFont(*this->font);
     this->text.setString(text);
-    this->text.setFillColor(sf::Color::White);
+    this->text.setFillColor(theme::cornsilk);
     this->text.setCharacterSize(24);
     const sf::FloatRect bounds = this->shape.getGlobalBounds();
     this->text.setPosition(sf::Vector2f(

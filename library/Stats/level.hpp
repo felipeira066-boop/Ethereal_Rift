@@ -16,7 +16,7 @@ protected:
 
     /* EXP necessária para o próximo nível */
     uint32_t expParaProximoNivel() const {
-        double exp = 80.0 * std::pow(1.2, currentLevel);
+        double exp = 23.0 * std::pow(1.2, currentLevel);
         return static_cast<uint32_t>(exp);
     }
 
@@ -27,23 +27,34 @@ public:
         currentExp   = 0;
     }
 
+    uint16_t addExp(uint32_t quant) {
+        if (currentLevel >= maxLevel) return 0;
+
+        currentExp += quant;
+        const uint16_t previousLevel = currentLevel;
+
+        while (currentExp >= expParaProximoNivel() &&
+               currentLevel < maxLevel) {
+            currentExp   -= expParaProximoNivel();
+            currentLevel += 1;
+        }
+
+        return currentLevel - previousLevel;
+    }
+
     /* adiciona EXP e sobe de nível automaticamente */
     void getLvl(uint32_t quant) {
         if (currentLevel >= maxLevel) return;
 
-        currentExp += quant;
+        const uint16_t previousLevel = currentLevel;
+        addExp(quant);
         std::cout << "  + " << quant << " EXP"
                   << " (" << currentExp << "/"
                   << expParaProximoNivel() << ")\n";
 
-        while (currentExp >= expParaProximoNivel() &&
-               currentLevel < maxLevel) {
-
-            currentExp   -= expParaProximoNivel();
-            currentLevel += 1;
-
+        for (uint16_t level = previousLevel; level < currentLevel; ++level) {
             std::cout << "\n  *** LEVEL UP! Nível atual: "
-                      << currentLevel << " ***\n";
+                      << level + 1 << " ***\n";
         }
     }
 

@@ -1,4 +1,5 @@
 #include "setPerfilState.h"
+#include "Header/Palette.hpp"
 
 void setPerfilState::initVariables(){
     this->characterName = "Hero";
@@ -8,12 +9,8 @@ void setPerfilState::initVariables(){
 }
 
 void setPerfilState::initBackground(){
-    this->background.setSize(sf::Vector2f(static_cast<float>(this->window->getSize().x), static_cast<float>(this->window->getSize().y)));
-    if (!this->bgTexture.loadFromFile("Resource_Files/Images/Backgrounds/bg1.png")) {
-        this->background.setFillColor(sf::Color(15, 23, 42));
-        return;
-    }
-    this->background.setTexture(&this->bgTexture);
+    this->background.setSize(sf::Vector2f(1280.f, 720.f));
+    this->background.setFillColor(theme::darkOliveGreen);
 }
 void setPerfilState::initFonts(){
     if (!this->font.openFromFile("Fonts/GeistPixel-Regular-VariableFont_ELSH.ttf")) {
@@ -28,8 +25,8 @@ void setPerfilState::initButton(){
 
 sf::Vector2f setPerfilState::radarPoint(float value, float radius) const{
     constexpr float pi = 3.14159265358979323846f;
-    constexpr float centerX = 1200.f;
-    constexpr float centerY = 560.f;
+    constexpr float centerX = 900.f;
+    constexpr float centerY = 385.f;
     constexpr float startAngle = -pi / 2.f;
     const float angle = startAngle + value * (2.f * pi / 5.f);
     return sf::Vector2f(centerX + std::cos(angle) * radius,
@@ -71,12 +68,16 @@ void setPerfilState::updateSelectedStats(){
 void setPerfilState::initRadarChart(){
     this->radarGrid.setPointCount(5);
     this->radarGrid.setFillColor(sf::Color::Transparent);
-    this->radarGrid.setOutlineColor(sf::Color(190, 210, 230, 180));
+    this->radarGrid.setOutlineColor(sf::Color(theme::lemonMeringue.r,
+                                               theme::lemonMeringue.g,
+                                               theme::lemonMeringue.b, 150));
     this->radarGrid.setOutlineThickness(2.f);
 
     this->radarValues.setPointCount(5);
-    this->radarValues.setFillColor(sf::Color(40, 180, 210, 130));
-    this->radarValues.setOutlineColor(sf::Color(130, 240, 255));
+    this->radarValues.setFillColor(sf::Color(theme::alloyOrange.r,
+                                              theme::alloyOrange.g,
+                                              theme::alloyOrange.b, 130));
+    this->radarValues.setOutlineColor(theme::lemonMeringue);
     this->radarValues.setOutlineThickness(3.f);
 
     const std::array<std::string, 5> names = {
@@ -84,9 +85,9 @@ void setPerfilState::initRadarChart(){
     };
     this->radarLabels.clear();
     for (std::size_t index = 0; index < names.size(); ++index) {
-        this->radarLabels.emplace_back(this->font, names[index], 22);
-        this->radarLabels[index].setFillColor(sf::Color::White);
-        const sf::Vector2f labelPoint = this->radarPoint(static_cast<float>(index), 255.f);
+        this->radarLabels.emplace_back(this->font, names[index], 18);
+        this->radarLabels[index].setFillColor(theme::cornsilk);
+        const sf::Vector2f labelPoint = this->radarPoint(static_cast<float>(index), 158.f);
         this->radarLabels[index].setPosition(labelPoint);
     }
 
@@ -95,7 +96,7 @@ void setPerfilState::initRadarChart(){
 
 void setPerfilState::updateRadarChart(){
     constexpr float maxStat = 10.f;
-    constexpr float radius = 200.f;
+    constexpr float radius = 125.f;
 
     for (std::size_t index = 0; index < 5; ++index) {
         this->radarGrid.setPoint(index, this->radarPoint(static_cast<float>(index), radius));
@@ -119,93 +120,95 @@ setPerfilState::setPerfilState(sf::RenderWindow* window, std::map<std::string, i
     this->initRadarChart();
 
     this->buttons["RETURN_STATE"] =
-        new Button(150, 940, 150, 75,
+        new Button(64, 640, 150, 52,
             &this->font, "Return",
-            sf::Color(0, 128, 128, 100),
-            sf::Color(255, 99, 71, 100),
-            sf::Color(255, 105, 180, 100));
+            theme::russet,
+            theme::alloyOrange,
+            theme::camel);
 
     this->buttons["NEXT_STATE"] =
-        new Button(1800, 940, 150, 75,
+        new Button(1066, 640, 150, 52,
             &this->font, "Next",
-            sf::Color(0, 128, 128, 100),
-            sf::Color(255, 99, 71, 100),
-            sf::Color(255, 105, 180, 100));
+            theme::russet,
+            theme::alloyOrange,
+            theme::camel);
 
     this->buttons["HUMAN_RACE"] =
-        new Button(250, 450, 220, 80,
+        new Button(64, 205, 170, 56,
             &this->font, "Human",
-            sf::Color(0, 128, 128, 100),
-            sf::Color(255, 99, 71, 100),
-            sf::Color(255, 105, 180, 100));
+            theme::russet,
+            theme::alloyOrange,
+            theme::camel);
 
     this->buttons["ELF_RACE"] =
-        new Button(250, 560, 220, 80,
+        new Button(64, 275, 170, 56,
             &this->font, "Elf",
-            sf::Color(0, 128, 128, 100),
-            sf::Color(255, 99, 71, 100),
-            sf::Color(255, 105, 180, 100));
+            theme::russet,
+            theme::alloyOrange,
+            theme::camel);
 
     this->buttons["DWARF_RACE"] =
-        new Button(250, 670, 220, 80,
+        new Button(64, 345, 170, 56,
             &this->font, "Dwarf",
-            sf::Color(0, 128, 128, 100),
-            sf::Color(255, 99, 71, 100),
-            sf::Color(255, 105, 180, 100));
+            theme::russet,
+            theme::alloyOrange,
+            theme::camel);
 
     this->buttons["WARRIOR_CLASS"] =
-        new Button(500, 450, 220, 80,
+        new Button(260, 205, 170, 56,
             &this->font, "Warrior",
-            sf::Color(0, 128, 128, 100),
-            sf::Color(255, 99, 71, 100),
-            sf::Color(255, 105, 180, 100));
+            theme::russet,
+            theme::alloyOrange,
+            theme::camel);
 
     this->buttons["HUNTER_CLASS"] =
-        new Button(500, 560, 220, 80,
+        new Button(260, 275, 170, 56,
             &this->font, "Hunter",
-            sf::Color(0, 128, 128, 100),
-            sf::Color(255, 99, 71, 100),
-            sf::Color(255, 105, 180, 100));
+            theme::russet,
+            theme::alloyOrange,
+            theme::camel);
 
     this->buttons["MAGE_CLASS"] =
-        new Button(500, 670, 220, 80,
+        new Button(260, 345, 170, 56,
             &this->font, "Mage",
-            sf::Color(0, 128, 128, 100),
-            sf::Color(255, 99, 71, 100),
-            sf::Color(255, 105, 180, 100));
+            theme::russet,
+            theme::alloyOrange,
+            theme::camel);
 
     this->buttons["CLERIC_CLASS"] =
-        new Button(500, 780, 220, 80,
+        new Button(260, 415, 170, 56,
             &this->font, "Cleric",
-            sf::Color(0, 128, 128, 100),
-            sf::Color(255, 99, 71, 100),
-            sf::Color(255, 105, 180, 100));
+            theme::russet,
+            theme::alloyOrange,
+            theme::camel);
 
     this->selectedRaceText.setFont(this->font);
     this->selectedRaceText.setString("Race: Human");
-    this->selectedRaceText.setCharacterSize(28);
-    this->selectedRaceText.setFillColor(sf::Color::White);
-    this->selectedRaceText.setPosition(sf::Vector2f(700.f, 250.f));
+    this->selectedRaceText.setCharacterSize(22);
+    this->selectedRaceText.setFillColor(theme::cornsilk);
+    this->selectedRaceText.setPosition(sf::Vector2f(470.f, 205.f));
 
     this->selectedClassText.setFont(this->font);
     this->selectedClassText.setString("Class: Warrior");
-    this->selectedClassText.setCharacterSize(28);
-    this->selectedClassText.setFillColor(sf::Color::White);
-    this->selectedClassText.setPosition(sf::Vector2f(700.f, 295.f));
+    this->selectedClassText.setCharacterSize(22);
+    this->selectedClassText.setFillColor(theme::cornsilk);
+    this->selectedClassText.setPosition(sf::Vector2f(470.f, 245.f));
 
-    this->nameInputBox.setPosition(sf::Vector2f(250.f, 270.f));
-    this->nameInputBox.setSize(sf::Vector2f(470.f, 60.f));
-    this->nameInputBox.setFillColor(sf::Color(10, 20, 35, 210));
-    this->nameInputBox.setOutlineColor(sf::Color(130, 220, 240));
+    this->nameInputBox.setPosition(sf::Vector2f(64.f, 92.f));
+    this->nameInputBox.setSize(sf::Vector2f(366.f, 48.f));
+    this->nameInputBox.setFillColor(theme::laurelGreen);
+    this->nameInputBox.setOutlineColor(theme::alloyOrange);
     this->nameInputBox.setOutlineThickness(2.f);
 
     this->nameText.setString(this->characterName);
-    this->nameText.setFillColor(sf::Color::White);
-    this->nameText.setPosition(sf::Vector2f(270.f, 284.f));
+    this->nameText.setFillColor(theme::russet);
+    this->nameText.setCharacterSize(20);
+    this->nameText.setPosition(sf::Vector2f(80.f, 101.f));
 
     this->instructionsText.setString("Name (type here) | Select race and class");
-    this->instructionsText.setFillColor(sf::Color(220, 230, 240));
-    this->instructionsText.setPosition(sf::Vector2f(250.f, 210.f));
+    this->instructionsText.setCharacterSize(18);
+    this->instructionsText.setFillColor(theme::lemonMeringue);
+    this->instructionsText.setPosition(sf::Vector2f(64.f, 40.f));
 }
 
 setPerfilState::~setPerfilState()
@@ -297,8 +300,8 @@ void setPerfilState::updateButton(){
 
     if(this->buttons["NEXT_STATE"]->isPressed())
     {
-        this->states->push(new GameState(this->window, this->supportedKeys, this->states,
-                                          this->buildCharacterConfig()));
+        this->states->push(new BattleState(this->window, this->supportedKeys, this->states,
+                                            this->buildCharacterConfig()));
     }
 
     if(this->buttons["RETURN_STATE"]->isPressed())

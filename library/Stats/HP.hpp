@@ -20,13 +20,11 @@ class HP : public critical{
             // Dano do atacante menos o SEU escudo
 
             finalStats temp = attacker;
-            
+            CriticalDamage(temp);
 
             int FinalDamage = temp.Damage - myStats.Shield;
 
             if (FinalDamage < 0) FinalDamage = 0;
-
-            CriticalDamage(temp);
 
             CurrentHP -= FinalDamage;
 

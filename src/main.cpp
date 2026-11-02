@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <ctime>
 
 #include "../library/Systems/Itens/Effects.hpp"
 #include "../library/character/Classes/allClasses.hpp"
@@ -58,9 +59,9 @@ int escolherRaca(){
 ═══════════════════════════════════════════════════ */
 
 int main() {
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
     Game game;
     game.run();
-    srand(time(NULL));
 /*
     printSep();
     std::cout <<

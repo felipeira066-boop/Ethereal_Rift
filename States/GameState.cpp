@@ -1,4 +1,5 @@
 #include "GameState.hpp"
+#include "Header/Palette.hpp"
 
 void GameState::initKeybinds(){
 
@@ -27,60 +28,66 @@ void GameState::initPlayer(){
 }
 
 void GameState::initInterface(){
-    this->hudPanel.setPosition(sf::Vector2f(0.f, 0.f));
-    this->hudPanel.setSize(sf::Vector2f(1920.f, 180.f));
-    this->hudPanel.setFillColor(sf::Color(8, 16, 30, 235));
-    this->hudPanel.setOutlineColor(sf::Color(80, 120, 150));
+    this->hudPanel.setPosition(sf::Vector2f(32.f, 24.f));
+    this->hudPanel.setSize(sf::Vector2f(1216.f, 128.f));
+    this->hudPanel.setFillColor(theme::darkOliveGreen);
+    this->hudPanel.setOutlineColor(theme::camel);
     this->hudPanel.setOutlineThickness(2.f);
 
-    this->arenaPanel.setPosition(sf::Vector2f(40.f, 210.f));
-    this->arenaPanel.setSize(sf::Vector2f(1840.f, 650.f));
-    this->arenaPanel.setFillColor(sf::Color(20, 34, 48, 180));
-    this->arenaPanel.setOutlineColor(sf::Color(80, 120, 150));
+    this->arenaPanel.setPosition(sf::Vector2f(32.f, 176.f));
+    this->arenaPanel.setSize(sf::Vector2f(1216.f, 420.f));
+    this->arenaPanel.setFillColor(sf::Color(theme::laurelGreen.r,
+                                            theme::laurelGreen.g,
+                                            theme::laurelGreen.b, 220));
+    this->arenaPanel.setOutlineColor(theme::camel);
     this->arenaPanel.setOutlineThickness(2.f);
 
-    this->playerHitbox.setPosition(sf::Vector2f(250.f, 500.f));
-    this->playerHitbox.setSize(sf::Vector2f(90.f, 120.f));
-    this->playerHitbox.setFillColor(sf::Color(60, 180, 100, 90));
-    this->playerHitbox.setOutlineColor(sf::Color(100, 255, 150));
+    this->playerHitbox.setPosition(sf::Vector2f(180.f, 330.f));
+    this->playerHitbox.setSize(sf::Vector2f(80.f, 105.f));
+    this->playerHitbox.setFillColor(sf::Color(theme::darkOliveGreen.r,
+                                              theme::darkOliveGreen.g,
+                                              theme::darkOliveGreen.b, 100));
+    this->playerHitbox.setOutlineColor(theme::lemonMeringue);
     this->playerHitbox.setOutlineThickness(2.f);
 
-    this->monsterHitbox.setPosition(sf::Vector2f(1450.f, 470.f));
-    this->monsterHitbox.setSize(sf::Vector2f(150.f, 180.f));
-    this->monsterHitbox.setFillColor(sf::Color(190, 60, 70, 100));
-    this->monsterHitbox.setOutlineColor(sf::Color(255, 110, 120));
+    this->monsterHitbox.setPosition(sf::Vector2f(1000.f, 320.f));
+    this->monsterHitbox.setSize(sf::Vector2f(120.f, 145.f));
+    this->monsterHitbox.setFillColor(sf::Color(theme::russet.r,
+                                               theme::russet.g,
+                                               theme::russet.b, 140));
+    this->monsterHitbox.setOutlineColor(theme::alloyOrange);
     this->monsterHitbox.setOutlineThickness(3.f);
 
     this->arenaText.setString("COMBAT ARENA");
-    this->arenaText.setCharacterSize(28);
-    this->arenaText.setFillColor(sf::Color(220, 235, 245));
-    this->arenaText.setPosition(sf::Vector2f(70.f, 230.f));
+    this->arenaText.setCharacterSize(22);
+    this->arenaText.setFillColor(theme::russet);
+    this->arenaText.setPosition(sf::Vector2f(64.f, 190.f));
 
     this->monsterText.setString("MONSTER SPAWN");
-    this->monsterText.setCharacterSize(20);
-    this->monsterText.setFillColor(sf::Color(255, 170, 170));
-    this->monsterText.setPosition(sf::Vector2f(1430.f, 430.f));
+    this->monsterText.setCharacterSize(16);
+    this->monsterText.setFillColor(theme::russet);
+    this->monsterText.setPosition(sf::Vector2f(980.f, 280.f));
 
     this->hitboxText.setString("HITBOX DEBUG");
-    this->hitboxText.setCharacterSize(18);
-    this->hitboxText.setFillColor(sf::Color(255, 220, 120));
-    this->hitboxText.setPosition(sf::Vector2f(1370.f, 680.f));
+    this->hitboxText.setCharacterSize(14);
+    this->hitboxText.setFillColor(theme::russet);
+    this->hitboxText.setPosition(sf::Vector2f(930.f, 520.f));
 
     this->buttons["ABILITY_1"] = new Button(
-        500.f, 900.f, 170.f, 70.f, &this->font, "Ability 1",
-        sf::Color(35, 90, 150), sf::Color(60, 130, 205), sf::Color(90, 170, 240));
+        202.f, 630.f, 160.f, 56.f, &this->font, "Ability 1",
+        theme::russet, theme::alloyOrange, theme::camel);
     this->buttons["ABILITY_2"] = new Button(
-        690.f, 900.f, 170.f, 70.f, &this->font, "Ability 2",
-        sf::Color(35, 90, 150), sf::Color(60, 130, 205), sf::Color(90, 170, 240));
+        376.f, 630.f, 160.f, 56.f, &this->font, "Ability 2",
+        theme::russet, theme::alloyOrange, theme::camel);
     this->buttons["ABILITY_3"] = new Button(
-        880.f, 900.f, 170.f, 70.f, &this->font, "Ability 3",
-        sf::Color(35, 90, 150), sf::Color(60, 130, 205), sf::Color(90, 170, 240));
+        550.f, 630.f, 160.f, 56.f, &this->font, "Ability 3",
+        theme::russet, theme::alloyOrange, theme::camel);
     this->buttons["FLEE"] = new Button(
-        1070.f, 900.f, 170.f, 70.f, &this->font, "Flee",
-        sf::Color(130, 75, 35), sf::Color(190, 110, 45), sf::Color(230, 145, 70));
+        724.f, 630.f, 140.f, 56.f, &this->font, "Flee",
+        theme::russet, theme::alloyOrange, theme::camel);
     this->buttons["INVENTORY"] = new Button(
-        1260.f, 900.f, 190.f, 70.f, &this->font, "Inventory",
-        sf::Color(45, 100, 75), sf::Color(65, 145, 100), sf::Color(90, 190, 130));
+        878.f, 630.f, 200.f, 56.f, &this->font, "Inventory",
+        theme::darkOliveGreen, theme::laurelGreen, theme::camel);
 }
 
 GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys,
@@ -101,8 +108,9 @@ GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* suppo
     }
     this->characterText.setString(
         this->character.name + " - " + this->character.race + " " + this->character.characterClass);
-    this->characterText.setFillColor(sf::Color::White);
-    this->characterText.setPosition(sf::Vector2f(80.f, 80.f));
+    this->characterText.setCharacterSize(22);
+    this->characterText.setFillColor(theme::cornsilk);
+    this->characterText.setPosition(sf::Vector2f(64.f, 54.f));
 
     std::stringstream stats;
     stats << "VIG: " << this->character.stats[0] << "\n"
@@ -111,8 +119,9 @@ GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* suppo
           << "FOR: " << this->character.stats[3] << "\n"
           << "INT: " << this->character.stats[4];
     this->statsText.setString(stats.str());
-    this->statsText.setFillColor(sf::Color::White);
-    this->statsText.setPosition(sf::Vector2f(80.f, 140.f));
+    this->statsText.setCharacterSize(18);
+    this->statsText.setFillColor(theme::cornsilk);
+    this->statsText.setPosition(sf::Vector2f(640.f, 42.f));
     this->initInterface();
 }
 GameState::~GameState(){

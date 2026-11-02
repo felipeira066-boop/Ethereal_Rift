@@ -9,6 +9,7 @@ class Game{
         sf::RenderWindow *window;
         std::vector<sf::VideoMode> videoModes;
         sf::ContextSettings windowSettings;
+        sf::View view;
         bool fullscreen;
 
         sf::Clock dtClock;
@@ -20,6 +21,7 @@ class Game{
         //Init
         void initVariables();
         void initWindow();
+        void updateView(const sf::Vector2u& windowSize);
         void initKeys();
         void initState();
 

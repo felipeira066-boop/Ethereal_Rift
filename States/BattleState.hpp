@@ -1,0 +1,87 @@
+#pragma once
+
+#include "State.hpp"
+#include "../Header/CharacterConfig.hpp"
+#include "../Resource_Files/Button.hpp"
+#include "../library/Arena.hpp"
+#include "../library/Stats/HP.hpp"
+#include "../library/Stats/Mana.hpp"
+#include "../library/character/Moves/Moves.hpp"
+#include "../library/Stats/level.hpp"
+#include "../library/Systems/Economy/inventory/myBag.hpp"
+
+class BattleState : public State
+{
+public:
+    BattleState(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys,
+                std::stack<State*>* states, const CharacterConfig& character);
+    ~BattleState() override;
+
+    void update(const float& dt) override;
+    void updateInput(const float& dt) override;
+    void render(sf::RenderTarget* target = NULL) override;
+
+private:
+    CharacterConfig character;
+    sf::Font font;
+    sf::RectangleShape background;
+    sf::RectangleShape hudPanel;
+    sf::RectangleShape arenaPanel;
+    sf::RectangleShape playerHpTrack;
+    sf::RectangleShape playerHpBar;
+    sf::RectangleShape manaTrack;
+    sf::RectangleShape manaBar;
+    sf::RectangleShape expTrack;
+    sf::RectangleShape expBar;
+    sf::RectangleShape enemyHpTrack;
+    sf::RectangleShape enemyHpBar;
+    sf::RectangleShape playerShape;
+    sf::RectangleShape enemyShape;
+    sf::Text playerNameText;
+    sf::Text playerStatsText;
+    sf::Text playerHpText;
+    sf::Text manaText;
+    sf::Text expText;
+    sf::Text levelText;
+    sf::Text enemyNameText;
+    sf::Text enemyHpText;
+    sf::Text messageText;
+    std::map<std::string, Button*> buttons;
+
+    stats playerBaseStats{};
+    finalStats playerFinalStats{};
+    HP playerHealth;
+    Mana playerMana;
+    Inventory inventory;
+    Exp progression;
+    std::vector<EnemyData> enemies;
+    std::size_t enemyIndex = 0;
+    EnemyData currentEnemy{};
+    finalStats enemyFinalStats{};
+    HP enemyHealth;
+    const std::vector<MoveData>* moveTable = nullptr;
+    bool gameFinished = false;
+    bool actionButtonLatched = false;
+    float playerHitFlashRemaining = 0.f;
+    float playerHitFlashElapsed = 0.f;
+    float enemyHitFlashRemaining = 0.f;
+    float enemyHitFlashElapsed = 0.f;
+
+    void initKeybinds();
+    void initInterface();
+    void selectMoveTable();
+    stats levelGrowth() const;
+    void recalculatePlayerStats();
+    void loadEnemy();
+    void updateBars();
+    void updateHitFlashes(float dt);
+    void updateButtons();
+    void flashWhenHit(sf::RectangleShape& shape, float& remaining,
+                      float& elapsed);
+    void useMove(std::size_t moveIndex);
+    void playEnemyTurn();
+    void returnToMainMenu();
+    void finishEnemy();
+    void drawBar(sf::RenderTarget* target, const sf::RectangleShape& track,
+                const sf::RectangleShape& bar, const sf::Text& label);
+};

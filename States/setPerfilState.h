@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "GameState.hpp"
+#include "BattleState.hpp"
 #include "../Resource_Files/Button.hpp"
 #include <array>
 #include <cmath>
@@ -24,7 +24,6 @@ public:
 
 private:
     /*Variables*/
-    sf::Texture bgTexture;
     sf::RectangleShape background;
     sf::Font font;
     sf::Text selectedRaceText;
