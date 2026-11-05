@@ -3,13 +3,14 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <cstddef>
 
 struct ArmamentStat{
-    stats VIG;
-    stats DEF;
-    stats VEL;
-    stats FOR;
-    stats INT;
+    int VIG;
+    int DEF;
+    int VEL;
+    int FOR;
+    int INT;
 };
 
 template <typename T>
@@ -31,18 +32,37 @@ class ArmamentBase{
         }
 
         bool equip(T id){
-            long unsigned int index = static_cast <int> (id);
+                const int itemIndex = static_cast<int>(id);
 
-            if(index < 0 || index >= ArmamentsTable.size()) {
-                std::cout << "Equipamento invalido!\n";
-                return false;
+                if(itemIndex < 0 ||
+                   static_cast<std::size_t>(itemIndex) >= ArmamentsTable.size()) {
+                    std::cout << "Equipamento invalido!\n";
+                    return false;
+                }
+                else {
+                    CurrentArmament = ArmamentsTable[static_cast<std::size_t>(itemIndex)];
+                    std::cout << "Novo item equipado: " << CurrentArmament.name << "\n";
+                    return true;
+                }
             }
-            else {
-                CurrentArmament = ArmamentsTable[index];
-                std::cout << "Novo item equipado: " << CurrentArmament.name << "\n";
+
+            bool getItemData(T id, std::string& name, stats& itemStats) const {
+                const int itemIndex = static_cast<int>(id);
+                if (itemIndex <= 0 ||
+                    static_cast<std::size_t>(itemIndex) >= ArmamentsTable.size()) {
+                    return false;
+                }
+
+                const infoArmament& item =
+                    ArmamentsTable[static_cast<std::size_t>(itemIndex)];
+                name = item.name;
+                itemStats.VIG = item.stats.VIG;
+                itemStats.DEF = item.stats.DEF;
+                itemStats.VEL = item.stats.VEL;
+                itemStats.FOR = item.stats.FOR;
+                itemStats.INT = item.stats.INT;
                 return true;
             }
-        }
 
 
 };

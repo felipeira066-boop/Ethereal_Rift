@@ -55,15 +55,19 @@ void Button::update(const sf::Vector2f mousePos){
     switch(this->buttonStates){
         case BTN_IDLE:
             this->shape.setFillColor(this->idleColor);
+            this->text.setFillColor(theme::cornsilk);
             break;
         case BTN_HOVER:
             this->shape.setFillColor(this->hoverColor);
+            this->text.setFillColor(theme::cornsilk);
             break;
         case BTN_ACTIVE:
             this->shape.setFillColor(this->activeColor);
+            this->text.setFillColor(theme::russet);
             break;
         default:
-            this->shape.setFillColor(sf::Color::Red);
+            this->shape.setFillColor(theme::russet);
+            this->text.setFillColor(theme::cornsilk);
             break;
     }
 }

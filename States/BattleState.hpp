@@ -9,6 +9,7 @@
 #include "../library/character/Moves/Moves.hpp"
 #include "../library/Stats/level.hpp"
 #include "../library/Systems/Economy/inventory/myBag.hpp"
+#include "../library/Systems/Itens/EquipmentCatalog.hpp"
 
 class BattleState : public State
 {
@@ -49,10 +50,16 @@ private:
     std::map<std::string, Button*> buttons;
 
     stats playerBaseStats{};
+    stats equippedWeaponStats{};
+    stats equippedArmorStats{};
     finalStats playerFinalStats{};
     HP playerHealth;
     Mana playerMana;
     Inventory inventory;
+    std::vector<EquipmentOption> weapons;
+    std::vector<EquipmentOption> armors;
+    int equippedWeapon = 0;
+    int equippedArmor = 0;
     Exp progression;
     std::vector<EnemyData> enemies;
     std::size_t enemyIndex = 0;
@@ -61,6 +68,7 @@ private:
     HP enemyHealth;
     const std::vector<MoveData>* moveTable = nullptr;
     bool gameFinished = false;
+    bool shopStatsChanged = false;
     bool actionButtonLatched = false;
     float playerHitFlashRemaining = 0.f;
     float playerHitFlashElapsed = 0.f;
@@ -72,15 +80,17 @@ private:
     void selectMoveTable();
     stats levelGrowth() const;
     void recalculatePlayerStats();
+    void equipSelectedItems();
+    void syncEquipmentSelections();
     void loadEnemy();
     void updateBars();
     void updateHitFlashes(float dt);
     void updateButtons();
     void flashWhenHit(sf::RectangleShape& shape, float& remaining,
                       float& elapsed);
+    void showDefeatState();
     void useMove(std::size_t moveIndex);
     void playEnemyTurn();
-    void returnToMainMenu();
     void finishEnemy();
     void drawBar(sf::RenderTarget* target, const sf::RectangleShape& track,
                 const sf::RectangleShape& bar, const sf::Text& label);

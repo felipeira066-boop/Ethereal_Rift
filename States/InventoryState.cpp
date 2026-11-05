@@ -6,10 +6,21 @@
 InventoryState::InventoryState(sf::RenderWindow* window,
                                std::map<std::string, int>* supportedKeys,
                                std::stack<State*>* states,
-                               const Inventory& inventory)
+                               const Inventory& inventory,
+                               const std::vector<EquipmentOption>& weapons,
+                               const std::vector<EquipmentOption>& armors,
+                               int& equippedWeapon,
+                               int& equippedArmor,
+                               const std::function<void()>& onEquipmentChanged)
     : State(window, supportedKeys, states),
       titleText(this->font, "Inventario", 36),
-      itemsText(this->font, "", 24)
+      itemsText(this->font, "", 21),
+      equipmentText(this->font, "", 20),
+      weapons(weapons),
+      armors(armors),
+      equippedWeapon(equippedWeapon),
+      equippedArmor(equippedArmor),
+      onEquipmentChanged(onEquipmentChanged)
 {
     if (!this->font.openFromFile("Fonts/GeistPixel-Regular-VariableFont_ELSH.ttf")) {
         throw "ERROR::INVENTORY_STATE::INIT_FONT";
@@ -58,6 +69,23 @@ InventoryState::InventoryState(sf::RenderWindow* window,
     this->itemsText.setString(items.str());
     this->itemsText.setPosition(sf::Vector2f(220.f, 190.f));
     this->itemsText.setFillColor(theme::russet);
+
+    this->equipmentText.setPosition(sf::Vector2f(755.f, 190.f));
+    this->equipmentText.setFillColor(theme::russet);
+    this->updateEquipmentText();
+
+    this->buttons["WEAPON_PREVIOUS"] = new Button(
+        680.f, 260.f, 64.f, 48.f, &this->font, "<",
+        theme::russet, theme::alloyOrange, theme::camel);
+    this->buttons["WEAPON_NEXT"] = new Button(
+        1040.f, 260.f, 64.f, 48.f, &this->font, ">",
+        theme::russet, theme::alloyOrange, theme::camel);
+    this->buttons["ARMOR_PREVIOUS"] = new Button(
+        680.f, 390.f, 64.f, 48.f, &this->font, "<",
+        theme::russet, theme::alloyOrange, theme::camel);
+    this->buttons["ARMOR_NEXT"] = new Button(
+        1040.f, 390.f, 64.f, 48.f, &this->font, ">",
+        theme::russet, theme::alloyOrange, theme::camel);
 
     this->buttons["BACK"] = new Button(
         515.f, 535.f, 250.f, 56.f, &this->font, "Voltar a batalha",
@@ -115,10 +143,46 @@ void InventoryState::updateButtons()
         return;
     }
 
+    const auto changeEquipment = [this](const std::string& buttonName,
+                                        int& equipped,
+                                        const std::vector<EquipmentOption>& options,
+                                        int direction) {
+        if (!this->buttons[buttonName]->isPressed()) {
+            return false;
+        }
+        const int count = static_cast<int>(options.size());
+        equipped = (equipped + direction + count) % count;
+        this->onEquipmentChanged();
+        this->updateEquipmentText();
+        this->actionButtonLatched = true;
+        return true;
+    };
+
+    if (changeEquipment("WEAPON_PREVIOUS", this->equippedWeapon,
+                       this->weapons, -1) ||
+        changeEquipment("WEAPON_NEXT", this->equippedWeapon,
+                        this->weapons, 1) ||
+        changeEquipment("ARMOR_PREVIOUS", this->equippedArmor,
+                        this->armors, -1) ||
+        changeEquipment("ARMOR_NEXT", this->equippedArmor,
+                        this->armors, 1)) {
+        return;
+    }
+
     if (this->buttons["BACK"]->isPressed()) {
         this->actionButtonLatched = true;
         this->endState();
     }
+}
+
+void InventoryState::updateEquipmentText()
+{
+    std::ostringstream equipment;
+    equipment << "EQUIPAMENTO\n\n"
+              << "Arma:\n" << this->weapons.at(this->equippedWeapon).name
+              << "\n\n\nArmadura:\n"
+              << this->armors.at(this->equippedArmor).name;
+    this->equipmentText.setString(equipment.str());
 }
 
 void InventoryState::render(sf::RenderTarget* target)
@@ -131,6 +195,7 @@ void InventoryState::render(sf::RenderTarget* target)
     target->draw(this->panel);
     target->draw(this->titleText);
     target->draw(this->itemsText);
+    target->draw(this->equipmentText);
     for (auto& button : this->buttons) {
         button.second->render(target);
     }

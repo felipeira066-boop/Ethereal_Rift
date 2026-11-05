@@ -4,9 +4,10 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <cstddef>
 
 struct ArmorStat{
-    stats VIG, DEF, VEL, FOR, INT;
+    int VIG, DEF, VEL, FOR, INT;
 };
 
 template<typename T>
@@ -29,18 +30,37 @@ public:
     }
 
     bool equip(T id){
-        long unsigned int index = static_cast <int> (id);
+        const int itemIndex = static_cast<int>(id);
 
-        if(index < 0 || index >= ArmorTable.size()){
+        if(itemIndex < 0 ||
+           static_cast<std::size_t>(itemIndex) >= ArmorTable.size()){
             std::cout << "Equipamento inválido!\n";
             return false;
         }
 
         else{
-            CurrentArmor = ArmorTable[index];
+            CurrentArmor = ArmorTable[static_cast<std::size_t>(itemIndex)];
             std::cout << "Novo item equipado: " << CurrentArmor.name << std::endl;
             return true;
         }
+
+    }
+
+    bool getItemData(T id, std::string& name, stats& itemStats) const {
+        const int itemIndex = static_cast<int>(id);
+        if (itemIndex <= 0 ||
+            static_cast<std::size_t>(itemIndex) >= ArmorTable.size()) {
+            return false;
+        }
+
+        const infoArmor& item = ArmorTable[static_cast<std::size_t>(itemIndex)];
+        name = item.name;
+        itemStats.VIG = item.stats.VIG;
+        itemStats.DEF = item.stats.DEF;
+        itemStats.VEL = item.stats.VEL;
+        itemStats.FOR = item.stats.FOR;
+        itemStats.INT = item.stats.INT;
+        return true;
     }
 
 };

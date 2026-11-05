@@ -149,6 +149,9 @@ void Game::update(){
 }
 
 void Game::render(){
+    if (!this->window->isOpen())
+        return;
+
     this->window->clear();
     //render Items
     if(!this->states.empty()){

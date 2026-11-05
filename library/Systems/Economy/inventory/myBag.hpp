@@ -29,7 +29,6 @@ public:
     bool addConsumable(ConsumableID id, int quantity = 1) {
         if (!setConsumable(id) || id == ConsumableID::NONE) {
             std::cout << "  Item consumível inválido!" << std::endl;
-            std::cin.get();
             return false;
         }
 
@@ -38,7 +37,6 @@ public:
         
         if (currentQty + quantity > maxCapacity) {
             std::cout << "  Inventário cheio!" << std::endl;
-            std::cin.get();
             return false;
         }
 
@@ -50,7 +48,6 @@ public:
     bool addPotion(PotionID id, int quantity = 1) {
         if (!setPotion(id)) {
             std::cout << "  Poção inválida!" << std::endl;
-            std::cin.get();
             return false;
         }
 
@@ -59,13 +56,11 @@ public:
         
         if (currentQty + quantity > maxCapacity) {
             std::cout << "  Inventário cheio!" << std::endl;
-            std::cin.get();
             return false;
         }
 
         potions[key] += quantity;
         std::cout << "  " << quantity << "x " << getPotionName(id) << " adicionado!" << std::endl;
-        std::cin.get();
         return true;
     }
 
@@ -195,14 +190,12 @@ public:
         // Poções
         if (!potions.empty()) {
             std::cout << "\n┌─ POÇÕES:" << std::endl;
-            int count = 0;
             for (int i = 1; i <= 9; i++) {
                 std::string key = getPotionKey(static_cast<PotionID>(i));
                 auto it = potions.find(key);
                 if (it != potions.end() && it->second > 0) {
                     std::cout << "│  [" << (i + 4) << "] " << getPotionName(static_cast<PotionID>(i)) 
                               << " x" << it->second << std::endl;
-                    count++;
                 }
             }
             std::cout << "└" << std::endl;

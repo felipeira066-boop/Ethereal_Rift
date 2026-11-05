@@ -1,10 +1,14 @@
 #include "BattleState.hpp"
 #include "InventoryState.hpp"
+#include "DefeatState.hpp"
+#include "ShopState.hpp"
 #include "Header/Palette.hpp"
 
 #include <algorithm>
 #include <cmath>
 #include <sstream>
+
+extern int CurrentCoin;
 
 namespace {
 constexpr float barWidth = 430.f;
@@ -21,6 +25,35 @@ void setBar(sf::RectangleShape& bar, const sf::RectangleShape& track,
         : 0.f;
     bar.setPosition(track.getPosition());
     bar.setSize(sf::Vector2f(track.getSize().x * ratio, track.getSize().y));
+}
+
+bool sameStats(const stats& left, const stats& right)
+{
+    return left.VIG == right.VIG && left.DEF == right.DEF &&
+           left.VEL == right.VEL && left.FOR == right.FOR &&
+           left.INT == right.INT;
+}
+
+int findEquipmentIndex(const std::vector<EquipmentOption>& options,
+                       const stats& bonuses)
+{
+    for (std::size_t index = 0; index < options.size(); ++index) {
+        if (sameStats(options[index].bonuses, bonuses)) {
+            return static_cast<int>(index);
+        }
+    }
+    return 0;
+}
+
+void replaceEquipmentStats(stats& characterStats,
+                           const stats& previous,
+                           const stats& replacement)
+{
+    characterStats.VIG += replacement.VIG - previous.VIG;
+    characterStats.DEF += replacement.DEF - previous.DEF;
+    characterStats.VEL += replacement.VEL - previous.VEL;
+    characterStats.FOR += replacement.FOR - previous.FOR;
+    characterStats.INT += replacement.INT - previous.INT;
 }
 }
 
@@ -39,6 +72,8 @@ BattleState::BattleState(sf::RenderWindow* window,
       enemyNameText(this->font, "", 22),
       enemyHpText(this->font, "", 16),
       messageText(this->font, "", 20),
+      weapons(getWeaponsForClass(character.characterClass)),
+      armors(getArmorForClass(character.characterClass)),
       enemies(arenaInimigos)
 {
     if (!this->font.openFromFile("Fonts/GeistPixel-Regular-VariableFont_ELSH.ttf")) {
@@ -122,6 +157,30 @@ void BattleState::recalculatePlayerStats()
               << "   FOR " << this->playerBaseStats.FOR
               << "   INT " << this->playerBaseStats.INT;
     this->playerStatsText.setString(statsText.str());
+}
+
+void BattleState::equipSelectedItems()
+{
+    const stats& newWeapon =
+        this->weapons.at(static_cast<std::size_t>(this->equippedWeapon)).bonuses;
+    const stats& newArmor =
+        this->armors.at(static_cast<std::size_t>(this->equippedArmor)).bonuses;
+
+    replaceEquipmentStats(this->playerBaseStats, this->equippedWeaponStats,
+                          newWeapon);
+    replaceEquipmentStats(this->playerBaseStats, this->equippedArmorStats,
+                          newArmor);
+    this->equippedWeaponStats = newWeapon;
+    this->equippedArmorStats = newArmor;
+    this->recalculatePlayerStats();
+}
+
+void BattleState::syncEquipmentSelections()
+{
+    this->equippedWeapon =
+        findEquipmentIndex(this->weapons, this->equippedWeaponStats);
+    this->equippedArmor =
+        findEquipmentIndex(this->armors, this->equippedArmorStats);
 }
 
 void BattleState::initInterface()
@@ -287,6 +346,10 @@ void BattleState::updateInput(const float&)
 
 void BattleState::update(const float& dt)
 {
+    if (this->shopStatsChanged) {
+        this->shopStatsChanged = false;
+        this->recalculatePlayerStats();
+    }
     this->updateHitFlashes(dt);
     this->updateMousePosition();
     this->updateInput(dt);
@@ -361,8 +424,12 @@ void BattleState::updateButtons()
 
     if (this->buttons["INVENTORY"]->isPressed()) {
         this->actionButtonLatched = true;
+        this->syncEquipmentSelections();
         this->states->push(new InventoryState(
-            this->window, this->supportedKeys, this->states, this->inventory));
+            this->window, this->supportedKeys, this->states, this->inventory,
+            this->weapons, this->armors, this->equippedWeapon,
+            this->equippedArmor,
+            [this]() { this->equipSelectedItems(); }));
     }
 }
 
@@ -394,7 +461,7 @@ void BattleState::useMove(std::size_t moveIndex)
     if (!playerIsFaster) {
         this->playEnemyTurn();
         if (!this->playerHealth.isAlive()) {
-            this->returnToMainMenu();
+            this->showDefeatState();
             return;
         }
     }
@@ -427,21 +494,15 @@ void BattleState::useMove(std::size_t moveIndex)
     if (playerIsFaster) {
         this->playEnemyTurn();
         if (!this->playerHealth.isAlive()) {
-            this->returnToMainMenu();
+            this->showDefeatState();
         }
     }
 }
 
-void BattleState::returnToMainMenu()
+void BattleState::showDefeatState()
 {
-    State* battleState = this->states->top();
-    this->states->pop();
-    while (this->states->size() > 1) {
-        delete this->states->top();
-        this->states->pop();
-    }
-    this->states->push(battleState);
-    this->endState();
+    this->states->push(new DefeatState(
+        this->window, this->supportedKeys, this->states));
 }
 
 void BattleState::playEnemyTurn()
@@ -465,6 +526,7 @@ void BattleState::finishEnemy()
 {
     const std::string defeatedEnemy = this->currentEnemy.nome;
     const std::uint32_t expReward = this->currentEnemy.expRecompensa;
+    const std::uint32_t coinReward = this->currentEnemy.coinRecompensa;
     const std::uint16_t previousLevel = this->progression.getNivel();
     const std::uint16_t levelsGained =
         this->progression.addExp(expReward);
@@ -481,15 +543,22 @@ void BattleState::finishEnemy()
         this->recalculatePlayerStats();
     }
 
+    CurrentCoin += static_cast<int>(coinReward);
     ++this->enemyIndex;
     this->loadEnemy();
     this->messageText.setString(
         "Voce derrotou " + defeatedEnemy + " e ganhou " +
-        std::to_string(expReward) + " XP." +
+        std::to_string(expReward) + " XP e " +
+        std::to_string(coinReward) + " moedas." +
         (this->progression.getNivel() > previousLevel
             ? " Novo nivel: " + std::to_string(this->progression.getNivel()) + "!"
             : "") +
         (this->gameFinished ? " Arena concluida!" : ""));
+
+    this->states->push(new ShopState(
+        this->window, this->supportedKeys, this->states, this->character,
+        this->inventory, this->playerBaseStats, this->equippedWeaponStats,
+        this->equippedArmorStats, this->shopStatsChanged, CurrentCoin));
 }
 
 void BattleState::drawBar(sf::RenderTarget* target,

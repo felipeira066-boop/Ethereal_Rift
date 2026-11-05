@@ -10,7 +10,7 @@ SRC_DIR := src
 
 SRCS = src/main.cpp src/Game.cpp \
 		States/State.cpp States/GameState.cpp States/BattleState.cpp States/InventoryState.cpp States/MainMenuState.cpp States/setPerfilState.cpp \
-		Resource_Files/Button.cpp
+		States/DefeatState.cpp States/ShopState.cpp Resource_Files/Button.cpp
 
 .PHONY: all run clean
 
