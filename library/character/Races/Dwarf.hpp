@@ -23,12 +23,12 @@ class Dwarf {
     };
     public:
 
-    data_subdwarf Current_Race = {id_subDwarf::FORGE_DWARF,  "Anão Ferreiro",  5,  4,  0,  2, 1};
+    data_subdwarf Current_Race = {id_subDwarf::FORGE_DWARF,  "Forge Dwarf",  5,  4,  0,  2, 1};
 
     std::vector <data_subdwarf> DwarfTable{
-        {id_subDwarf::FORGE_DWARF,       "Anão Ferreiro",        5,  4,  0,  2,  1},
-        {id_subDwarf::COULINS_DWARF,     "Anão das Colinas",     3,  4,  0,  4,  1},
-        {id_subDwarf::UNDERGROUND_DWARF, "Anão do Subsolo",      2,  4,  1,  2,  3}
+        {id_subDwarf::FORGE_DWARF,       "Forge Dwarf",        5,  4,  0,  2,  1},
+        {id_subDwarf::COULINS_DWARF,     "Hill Dwarf",         3,  4,  0,  4,  1},
+        {id_subDwarf::UNDERGROUND_DWARF, "Underground Dwarf",  2,  4,  1,  2,  3}
 
     };
     bool beRace(id_subDwarf sD){
@@ -38,7 +38,7 @@ class Dwarf {
         data_subdwarf select = DwarfTable[Dwarfdex];
 
         Current_Race = select;
-        std::cout << "  Raça definida: " << Current_Race.nome << std::endl;
+        std::cout << "  Race set: " << Current_Race.nome << std::endl;
         return true;
     }
     

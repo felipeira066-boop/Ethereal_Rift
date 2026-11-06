@@ -68,10 +68,10 @@ bool PlayerTurn(P &jogador, EnemyData &inimigo, const std::string &nomeJogador){
         if (move->curaBase > 0) {
             jogador.getHeal(move->curaBase);
             cout << "  > " << move->nome
-                << " — curou " << move->curaBase << " HP!\n";
+                << " — healed " << move->curaBase << " HP!\n";
 
             jogador.useMana(move->costMana);
-            cout << "  > Mana restante: " << jogador.getCurrentMana() << "\n";
+            cout << "  > Mana remaining: " << jogador.getCurrentMana() << "\n";
         }
 
         /* dano no inimigo */
@@ -87,14 +87,14 @@ bool PlayerTurn(P &jogador, EnemyData &inimigo, const std::string &nomeJogador){
             if (inimigo.hp < 0) inimigo.hp = 0;
 
             cout << "  > " << move->nome
-                << " causou " << danoComShield
-                << " de dano em " << inimigo.nome << "!\n";
+                << " dealt " << danoComShield
+                << " damage to " << inimigo.nome << "!\n";
 
             jogador.useMana(move->costMana);
-            cout << "  > Mana restante: " << jogador.getCurrentMana() << "\n";
+            cout << "  > Mana remaining: " << jogador.getCurrentMana() << "\n";
         }
     } else {
-        cout << "  > Nenhum move usado!\n";
+        cout << "  > No move used!\n";
     }
     return true;
 }
@@ -109,7 +109,7 @@ bool MonsterTurn(M &jogador, EnemyData &inimigo){
     iniStats.Speed  = inimigo.speed;
     iniStats.MaxMana = 0;
 
-    cout << "  > " << inimigo.nome << " ataca!\n";
+    cout << "  > " << inimigo.nome << " attacks!\n";
     jogador.takeDamage(iniStats);
 
     return true;
@@ -122,35 +122,35 @@ bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador, Inve
     effectsBonus eff;
 
     if (inimigo.ID == 3 || inimigo.ID == 6 || inimigo.ID == 9 || inimigo.ID == 12) {
-            cout << "  > Você quer visitar a loja da cidade? (s/n)\n"
+            cout << "  > Would you like to visit the city shop? (y/n)\n"
             << "  > ";
             char resposta;
             cin >> resposta;
 
-            if (resposta == 's' || resposta == 'S') {
+            if (resposta == 'y' || resposta == 'Y') {
                 Shop shop(bag);
                 shop.initShop();
             }
         }
 
-         cout << "  > Pressione Enter para iniciar a batalha...";
+         cout << "  > Press Enter to start the battle...";
          cin.get();
 
     cout << "\n========================================\n";
-    cout << "  BATALHA: " << nomeJogador << " vs " << inimigo.nome << "\n";
+    cout << "  BATTLE: " << nomeJogador << " vs " << inimigo.nome << "\n";
     cout << "========================================\n";
 
     while (jogador.isAlive() && inimigo.isAlive()) {
 
-        cout << "\n  -- Turno: " << turno << " --\n";
+        cout << "\n  -- Turn: " << turno << " --\n";
         printBarraHP(nomeJogador,  jogador.getHP(), jogador.getMaxHP());
         printBarraMana( jogador.getCurrentMana(), jogador.getMaxMana());
         printBarraExp( jogador.getExp(), jogador.getExpMax());
 
         printBarraHP(inimigo.nome, inimigo.hp, inimigo.hpmax);
 
-        cout << "  1. Entrar em batalha\n";
-        cout << "  2. Abrir Inventario\n";
+        cout << "  1. Fight\n";
+        cout << "  2. Open Inventory\n";
         cout << "  > ";
 
         int esc;
@@ -189,15 +189,15 @@ bool battle(B &jogador, EnemyData &inimigo, const std::string &nomeJogador, Inve
     cout << "\n";
 
     if (!inimigo.isAlive()) {
-        cout << "  Voce derrotou " << inimigo.nome << "!\n";
+        cout << "  You defeated " << inimigo.nome << "!\n";
         cout << "  + " << inimigo.expRecompensa  << " EXP\n";
         gainCoin(inimigo.coinRecompensa);
         return true;
     }
 
-    cout << "  Voce foi derrotado por " << inimigo.nome << ". Game Over.\n";
+    cout << "  You were defeated by " << inimigo.nome << ". Game Over.\n";
     cin.get();
-    cout << "  RECORD: " << inimigo.ID <<  " inimigos derrotados.\n";
+    cout << "  RECORD: " << inimigo.ID <<  " enemies defeated.\n";
 
     return false;
 }
@@ -214,9 +214,9 @@ void arena(T &jogador, const std::string &nomeJogador) {
     for (auto &inimigo : arenaInimigos) {
         
 
-        cout << "\nProximo desafio: " << inimigo.nome
+        cout << "\nNext challenge: " << inimigo.nome
              << " (HP: " << inimigo.hp
-             << " | Dano: " << inimigo.damage
+             << " | Damage: " << inimigo.damage
              << " | Shield: " << inimigo.shield << ")\n";
 
         
@@ -229,13 +229,13 @@ void arena(T &jogador, const std::string &nomeJogador) {
 
         cout << "========================================\n";
         cout << "  " << nomeJogador
-             << " | Nivel " << jogador.getNivel()
+             << " | Level " << jogador.getNivel()
             << " | HP " << jogador.getHP()
             << "/" << jogador.getMaxHP() << "\n";
         cout << "========================================\n";
     }
 
     cout << "\n========================================\n";
-    cout << "  " << nomeJogador << " completou a arena!\n";
+    cout << "  " << nomeJogador << " completed the arena!\n";
     cout << "========================================\n";
 }

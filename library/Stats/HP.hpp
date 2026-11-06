@@ -16,11 +16,11 @@ class HP : public critical{
             CurrentHP = myStats.MaxHP;
         }
 
-        void takeDamage(const finalStats& attacker) {
+        void takeDamage(const finalStats& attacker, int criticalRateBonus = 0) {
             // Dano do atacante menos o SEU escudo
 
             finalStats temp = attacker;
-            CriticalDamage(temp);
+            CriticalDamage(temp, criticalRateBonus);
 
             int FinalDamage = temp.Damage - myStats.Shield;
 
@@ -30,18 +30,19 @@ class HP : public critical{
 
             if (CurrentHP < 0) CurrentHP = 0;
 
-            std::cout << "  Dano: " << FinalDamage << "\n";
+            std::cout << "  Damage: " << FinalDamage << "\n";
         }
 
         void getHeal(int quantidade) {
             CurrentHP += quantidade;
             if (CurrentHP > (int)myStats.MaxHP)
                 CurrentHP = (int)myStats.MaxHP;
-            std::cout << "  HP restaurado! Atual: " << CurrentHP << "\n";
+            std::cout << "  HP restored! Current: " << CurrentHP << "\n";
         }
 
         const finalStats &getStats() const { return myStats; }
         const int getHP() const {return CurrentHP;}
+        void setShield(std::uint32_t shield) { myStats.Shield = shield; }
         
         // Também é útil ter um método para ler o HP sem alterar
         bool isAlive() const { return CurrentHP > 0; }

@@ -15,7 +15,7 @@ class Mana{
         void getMana(int quantidade, uint32_t maxMana) {
             CurrentMana += quantidade;
             if (CurrentMana > maxMana) CurrentMana = maxMana;
-            std::cout << "  Mana restaurada! Atual: " << CurrentMana << "\n";
+            std::cout << "  Mana restored! Current: " << CurrentMana << "\n";
         }
         void initMana(const finalStats &fs) {       
             manaStats = fs;

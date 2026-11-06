@@ -26,6 +26,7 @@ class GameState : public State
     private:
         CharacterConfig character;
         sf::Font font;
+        sf::Font boldFont;
         sf::Text characterText;
         sf::Text statsText;
         sf::Text arenaText;

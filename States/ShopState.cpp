@@ -18,10 +18,10 @@ void appendEquipmentOffers(std::vector<MerchantOffer>& offers,
     for (std::size_t index = 1; index < equipment.size(); ++index) {
         const EquipmentOption& item = equipment[index];
         std::ostringstream details;
-        details << "VIG +" << item.bonuses.VIG
+        details << "VIT +" << item.bonuses.VIG
                 << "  DEF +" << item.bonuses.DEF
-                << "  VEL +" << item.bonuses.VEL << "\n"
-                << "FOR +" << item.bonuses.FOR
+                << "  SPD +" << item.bonuses.VEL << "\n"
+                << "STR +" << item.bonuses.FOR
                 << "  INT +" << item.bonuses.INT;
         offers.push_back({
             type, static_cast<int>(index), item.name, details.str(),
@@ -48,12 +48,12 @@ std::string effectDescription(const effectsBonus& bonus)
 
     appendEffect("HP", bonus.HealAmount);
     appendEffect("Mana", bonus.ManaBonus);
-    appendEffect("Dano", bonus.DamageBonus);
-    appendEffect("Escudo", bonus.ShieldBonus);
-    appendEffect("Vel", bonus.SpeedBonus);
-    appendEffect("Critico", bonus.CrtBonus);
+    appendEffect("Damage", bonus.DamageBonus);
+    appendEffect("Shield", bonus.ShieldBonus);
+    appendEffect("Speed", bonus.SpeedBonus);
+    appendEffect("Critical", bonus.CrtBonus);
     if (bonus.LeftTurns > 0) {
-        details << "  (" << bonus.LeftTurns << " turnos)";
+        details << "  (" << bonus.LeftTurns << " turns)";
     }
     return details.str();
 }
@@ -86,12 +86,15 @@ ShopState::ShopState(sf::RenderWindow* window,
       armorBonus(armorBonus),
       statsChanged(statsChanged),
       coins(coins),
-      titleText(this->font, "Mercador da arena", 30),
+      titleText(this->boldFont, "Arena Merchant", 30),
       coinsText(this->font, "", 20),
       statusText(this->font, "", 16)
 {
-    if (!this->font.openFromFile("Fonts/GeistPixel-Regular-VariableFont_ELSH.ttf")) {
+    if (!this->font.openFromFile("Fonts/slkscr.ttf")) {
         throw "ERROR::SHOP_STATE::INIT_FONT";
+    }
+    if (!this->boldFont.openFromFile("Fonts/slkscrb.ttf")) {
+        throw "ERROR::SHOP_STATE::INIT_BOLD_FONT";
     }
 
     this->initKeybinds();
@@ -232,25 +235,25 @@ void ShopState::initInterface()
         const std::string category =
             offer.type == MerchantOffer::Type::Potion ||
                     offer.type == MerchantOffer::Type::Consumable
-                ? "Consumivel"
+                ? "Consumable"
                 : offer.type == MerchantOffer::Type::Weapon
-                    ? "Arma"
-                    : "Armadura";
+                    ? "Weapon"
+                    : "Armor";
         text.setString(category + ": " + offer.name + "\n" +
-                       offer.details + "\nPreco: " +
-                       std::to_string(offer.price) + " moedas");
+                       offer.details + "\nPrice: " +
+                       std::to_string(offer.price) + " coins");
         this->offerTexts.push_back(text);
 
         const sf::Color idle = theme::russet;
         const sf::Color hover = theme::alloyOrange;
         const sf::Color active = theme::camel;
         this->buttons["BUY_" + std::to_string(index)] = new Button(
-            x + 70.f, y + 105.f, 250.f, 42.f, &this->font, "Comprar",
+            x + 70.f, y + 105.f, 250.f, 42.f, &this->font, "Buy",
             idle, hover, active);
     }
 
     this->buttons["CLOSE"] = new Button(
-        505.f, 648.f, 270.f, 46.f, &this->font, "Continuar",
+        505.f, 648.f, 270.f, 46.f, &this->font, "Continue",
         theme::russet, theme::alloyOrange, theme::camel);
 }
 
@@ -300,19 +303,19 @@ void ShopState::updateButtons()
 
 void ShopState::updateCoinsText()
 {
-    this->coinsText.setString("Moedas: " + std::to_string(this->coins));
+    this->coinsText.setString("Coins: " + std::to_string(this->coins));
 }
 
 void ShopState::purchase(std::size_t offerIndex)
 {
     if (offerIndex >= this->offers.size()) {
-        this->statusText.setString("Oferta invalida.");
+        this->statusText.setString("Invalid offer.");
         return;
     }
 
     const MerchantOffer& offer = this->offers[offerIndex];
     if (this->coins < offer.price) {
-        this->statusText.setString("Moedas insuficientes.");
+        this->statusText.setString("Not enough coins.");
         return;
     }
 
@@ -340,13 +343,13 @@ void ShopState::purchase(std::size_t offerIndex)
     }
 
     if (!addedToInventory) {
-        this->statusText.setString("Nao foi possivel guardar o item.");
+        this->statusText.setString("Could not store the item.");
         return;
     }
 
     this->coins -= offer.price;
     this->updateCoinsText();
-    this->statusText.setString("Comprado: " + offer.name);
+    this->statusText.setString("Purchased: " + offer.name);
 }
 
 void ShopState::render(sf::RenderTarget* target)

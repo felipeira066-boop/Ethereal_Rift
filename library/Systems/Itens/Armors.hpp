@@ -26,7 +26,7 @@ protected:
 
 public:
     ArmorBase(){
-        CurrentArmor = { static_cast <T> (0), "Nenhum", {0,  0,  0,  0,  0}};
+        CurrentArmor = { static_cast <T> (0), "None", {0,  0,  0,  0,  0}};
     }
 
     bool equip(T id){
@@ -34,13 +34,13 @@ public:
 
         if(itemIndex < 0 ||
            static_cast<std::size_t>(itemIndex) >= ArmorTable.size()){
-            std::cout << "Equipamento inválido!\n";
+            std::cout << "Invalid equipment!\n";
             return false;
         }
 
         else{
             CurrentArmor = ArmorTable[static_cast<std::size_t>(itemIndex)];
-            std::cout << "Novo item equipado: " << CurrentArmor.name << std::endl;
+            std::cout << "New item equipped: " << CurrentArmor.name << std::endl;
             return true;
         }
 
@@ -102,10 +102,10 @@ public:
     Warrior_armor(){
         ArmorTable = {
         //      ID                                   NOME                   VIG  DEF VEL FOR INT
-            {Warrior_armorID::NONE,               "NADA",                   {0,  0,  0,  0,  0}},
-            {Warrior_armorID::SILVER_GARMENTS,    "Vestimentas de Prata",   {2,  5,  0,  1,  0}},
-            {Warrior_armorID::UNIFORM_VIKING,     "Uniforme Viking",        {5,  1,  0,  3,  0}},
-            {Warrior_armorID::BEAR_SKINS,         "Pele de Urso",           {2,  2,  0,  2,  0}}
+            {Warrior_armorID::NONE,               "None",                   {0,  0,  0,  0,  0}},
+            {Warrior_armorID::SILVER_GARMENTS,    "Silver Garments",        {2,  5,  0,  1,  0}},
+            {Warrior_armorID::UNIFORM_VIKING,     "Viking Uniform",          {5,  1,  0,  3,  0}},
+            {Warrior_armorID::BEAR_SKINS,         "Bear Hide",              {2,  2,  0,  2,  0}}
         };
 
         CurrentArmor = ArmorTable[0];
@@ -123,10 +123,10 @@ public:
     Arrow_armor(){
         ArmorTable = {
             /*          ID                   nome                  vig def vel for int*/
-            {Arrow_armorID::NONE,             "NADA",               {0,  0,  0,  0,  0}},
-            {Arrow_armorID::ASSASINS_KIT,     "Kit de Assasinos",   {0,  1,  3,  1,  0}},
-            {Arrow_armorID::HUNTER_COAT,      "Casaco do Caçador",  {1,  3,  5,  0,  0}},
-            {Arrow_armorID::NINJAS_GEDGETS,   "Tralhas Ninjas",     {0,  1,  2,  1,  0}}
+            {Arrow_armorID::NONE,             "None",                      {0,  0,  0,  0,  0}},
+            {Arrow_armorID::ASSASINS_KIT,     "Assassin's Kit",             {0,  1,  3,  1,  0}},
+            {Arrow_armorID::HUNTER_COAT,      "Hunter's Coat",              {1,  3,  5,  0,  0}},
+            {Arrow_armorID::NINJAS_GEDGETS,   "Ninja Gear",                 {0,  1,  2,  1,  0}}
         };
 
         CurrentArmor = ArmorTable[0];
@@ -145,10 +145,10 @@ public:
     Wizard_armor(){
 
         ArmorTable = {
-            {Wizard_armorID::NONE,             "NADA",                 {0,  0,  0,  0,  0}},
-            {Wizard_armorID::WIZARD_ROBE,      "Roupão do Bruxo",      {1,  2,  0,  0,  3}},
-            {Wizard_armorID::STARS_HAT,        "Chapéu das Estrelas",  {0,  1,  0,  0,  2}},
-            {Wizard_armorID::GLITTER_TUNIC,    "Tunica de Glitter",    {2,  2,  0,  0,  4}}
+            {Wizard_armorID::NONE,             "None",                 {0,  0,  0,  0,  0}},
+            {Wizard_armorID::WIZARD_ROBE,      "Warlock Robe",          {1,  2,  0,  0,  3}},
+            {Wizard_armorID::STARS_HAT,        "Star Hat",              {0,  1,  0,  0,  2}},
+            {Wizard_armorID::GLITTER_TUNIC,    "Glitter Tunic",         {2,  2,  0,  0,  4}}
         };
 
         CurrentArmor = ArmorTable[0];
@@ -166,10 +166,10 @@ public:
     Cleric_armor(){
         ArmorTable = {
              /*      id                             nome            vig def vel for int*/
-            {Cleric_armorID::NONE,              "NADA",             {0,  0,  0,  0,  0}},
-            {Cleric_armorID::CHAIN_MAIL,        "Cota de Malha",    {2,  0,  0,  0,  1}},
-            {Cleric_armorID::SCALE_MAIL,        "Cota de Escamas",  {3,  0,  0,  0,  2}},
-            {Cleric_armorID::STUDDED_LEATHER,   "Couro Batido",     {5,  2,  0,  0,  1}}
+            {Cleric_armorID::NONE,              "None",              {0,  0,  0,  0,  0}},
+            {Cleric_armorID::CHAIN_MAIL,        "Chain Mail",        {2,  0,  0,  0,  1}},
+            {Cleric_armorID::SCALE_MAIL,        "Scale Mail",        {3,  0,  0,  0,  2}},
+            {Cleric_armorID::STUDDED_LEATHER,   "Studded Leather",   {5,  2,  0,  0,  1}}
         };
 
         CurrentArmor = ArmorTable[0];

@@ -17,6 +17,7 @@ public:
 
 private:
     sf::Font font;
+    sf::Font boldFont;
     sf::RectangleShape background;
     sf::RectangleShape panel;
     sf::Text titleText;

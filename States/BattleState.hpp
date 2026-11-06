@@ -25,6 +25,7 @@ public:
 private:
     CharacterConfig character;
     sf::Font font;
+    sf::Font boldFont;
     sf::RectangleShape background;
     sf::RectangleShape hudPanel;
     sf::RectangleShape arenaPanel;
@@ -60,6 +61,7 @@ private:
     std::vector<EquipmentOption> armors;
     int equippedWeapon = 0;
     int equippedArmor = 0;
+    int playerCriticalRate = 0;
     Exp progression;
     std::vector<EnemyData> enemies;
     std::size_t enemyIndex = 0;

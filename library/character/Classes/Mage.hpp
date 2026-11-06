@@ -41,18 +41,16 @@ public:
         uint16_t nivelAntes = Exp::currentLevel;
         getLvl(quant);
 
-        if (Exp::currentLevel > nivelAntes) {
+        for (uint16_t level = nivelAntes; level < Exp::currentLevel; ++level) {
             upStatusMage();
-            verificarNovosMovesDesbloqueados(Exp::currentLevel);
+            verificarNovosMovesDesbloqueados(level + 1);
         }
     }
 
     void upStatusMage() {
-        MgStats.VIG += 2;
-        MgStats.DEF += 1;
+        MgStats.VIG += 1;
         MgStats.VEL += 1;
-        MgStats.FOR += 2;
-        MgStats.INT += 1;
+        MgStats.INT += 3;
 
         finalStats fs = totalStats::contagem(MgStats, globalRaceStats);
         initHP(fs);

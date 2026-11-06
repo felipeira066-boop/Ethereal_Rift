@@ -8,8 +8,8 @@ using std::string;
 
 std::map<short,string> Merc = {
     {1, "Marcos"},
-    {2, "Lívia"},
-    {3, "Érik"}
+    {2, "Livia"},
+    {3, "Erik"}
 };  
 
 string genName(){

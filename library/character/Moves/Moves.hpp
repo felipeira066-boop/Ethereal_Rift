@@ -52,27 +52,27 @@ struct MoveData {
 ═══════════════════════════════════════════════════ */
 
 inline const std::vector<MoveData> warriorMoves = {
-    { MoveID::PORRADA,        "Porrada",        1,  5,  0, "Um soco direto no inimigo.", 0 },
-    { MoveID::FURIA,          "Furia",          5,  10, 0, "Ataque furioso com toda a forca.", 0 },
-    { MoveID::ECLIPSE_MORTAL, "Eclipse Mortal", 15, 28, 0, "Golpe devastador que ofusca tudo.", 2 }
+    { MoveID::PORRADA,        "Punch",          1,  5,  0, "A direct punch at the enemy.", 0 },
+    { MoveID::FURIA,          "Fury",           5,  10, 0, "A furious attack with all your strength.", 0 },
+    { MoveID::ECLIPSE_MORTAL, "Mortal Eclipse", 15, 28, 0, "A devastating strike that eclipses all.", 2 }
 };
 
 inline const std::vector<MoveData> hunterMoves = {
-    { MoveID::TIRO,           "Tiro",           1,  8,  0, "Disparo preciso a distancia.", 0 },
-    { MoveID::FLECHA_DE_OURO, "Flecha de Ouro", 5,  18, 0, "Flecha encantada de alto dano.", 0 },
-    { MoveID::MIRA_DA_MORTE,  "Mira da Morte",  15, 35, 0, "Tiro certeiro em ponto vital.", 0 }
+    { MoveID::TIRO,           "Shot",           1,  8,  0, "A precise ranged attack.", 0 },
+    { MoveID::FLECHA_DE_OURO, "Golden Arrow",   5,  18, 0, "An enchanted arrow that deals heavy damage.", 0 },
+    { MoveID::MIRA_DA_MORTE,  "Deadly Aim",     15, 35, 0, "A precise shot at a vital point.", 0 }
 };
 
 inline const std::vector<MoveData> mageMoves = {
-    { MoveID::EVIDENCIA,      "Evidencia",      1,  9,  0, "Feitico basico de energia arcana.", 6 },
-    { MoveID::CONJURACAO,     "Conjuracao",     5,  16, 0, "Invoca forcas magicas poderosas.", 15 },
-    { MoveID::BOLA_DE_FOGO,   "Bola de Fogo",   15, 35, 0, "Esfera de fogo explosiva.", 34 }
+    { MoveID::EVIDENCIA,      "Arcane Bolt",    1,  9,  0, "A basic arcane energy spell.", 6 },
+    { MoveID::CONJURACAO,     "Conjuration",    5,  16, 0, "Summons powerful magical forces.", 15 },
+    { MoveID::BOLA_DE_FOGO,   "Fireball",       15, 35, 0, "An explosive sphere of fire.", 34 }
 };
 
 inline const std::vector<MoveData> clericMoves = {
-    { MoveID::GOLPE_SAGRADO,  "Golpe Sagrado",  1,  7,  0,  "Golpe abencado pela luz divina.",  3  },
-    { MoveID::CURA_DIVINA,    "Cura Divina",    5,  0,  20, "Restaura HP com poder sagrado.",  10  },
-    { MoveID::JUIZO_FINAL,    "Juizo Final",    15, 30, 0,  "Poder divino que julga o inimigo.",  25  }
+    { MoveID::GOLPE_SAGRADO,  "Holy Strike",     1,  7,  0,  "A strike blessed by divine light.",  3  },
+    { MoveID::CURA_DIVINA,    "Divine Heal",     5,  0,  20, "Restores HP with sacred power.",  10  },
+    { MoveID::JUIZO_FINAL,    "Final Judgment", 15, 30, 0,  "Divine power that judges the enemy.",  25  }
 };
 
 /* ═══════════════════════════════════════════════════
@@ -90,7 +90,7 @@ public:
     void exibirMoves(uint16_t nivel) const {
         if (!moveTable) return;
 
-        std::cout << "\n  Escolha seu ataque:\n";
+        std::cout << "\n  Choose your attack:\n";
         for (int i = 0; i < (int)moveTable->size(); i++) {
             const MoveData &m = (*moveTable)[i];
 
@@ -98,14 +98,14 @@ public:
 
                 std::cout << "    " << (i + 1) << ". "
                           << m.nome
-                          << "  (dano: " << m.danoBase << ")"
-                          << "  (cura: " << m.curaBase << ")"
+                          << "  (damage: " << m.danoBase << ")"
+                          << "  (healing: " << m.curaBase << ")"
                           << "  (Mana: " << m.costMana << ")\n";
 
             } else {
                 std::cout << "    " << (i + 1) << ". "
                           << m.nome
-                          << " (bloqueado — nivel " << m.nivelMinimo << ")"
+                          << " (locked — level " << m.nivelMinimo << ")"
                           << "\n";
                           
             }
@@ -129,12 +129,12 @@ public:
         const MoveData &m = (*moveTable)[op];
 
         if (nivel < m.nivelMinimo) {
-            std::cout << "  Move bloqueado! Usando o primeiro disponivel.\n";
+            std::cout << "  Move locked! Using the first available move.\n";
             return &(*moveTable)[0];
         }
         if(m.costMana > jogador.getCurrentMana()){
-            std::cout << "  Você não tem mana suficiente para usar este move.\n";
-            std::cout << "  Nunhum move usado! \n" << std::endl;
+            std::cout << "  You do not have enough mana to use this move.\n";
+            std::cout << "  No move used.\n" << std::endl;
             return nullptr;
         }
 
@@ -158,10 +158,9 @@ public:
 
         for (const auto &m : *moveTable) {
             if (m.nivelMinimo == novoNivel) {
-                std::cout << "  --> Novo move desbloqueado: "
+                std::cout << "  --> New move unlocked: "
                           << m.nome << "!\n";
             }
         }
     }
 };
-

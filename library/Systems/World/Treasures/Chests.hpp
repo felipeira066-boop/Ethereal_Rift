@@ -14,11 +14,11 @@ struct Lootentry{
 };
 
 std::vector<Lootentry> LootComunTable = {
-    {"nada",                60,     0},
-    {"Maçã",                60,     1},
-    {"Torta de Melão",      60,     1},
-    {"Erva Assasina",       60,     1},
-    {"Fruta Estrelar",      60,     1}
+    {"Nothing",             60,     0},
+    {"Apple",               60,     1},
+    {"Melon Pie",           60,     1},
+    {"Assassin Herb",       60,     1},
+    {"Starfruit",           60,     1}
 };
 
 Lootentry playLoot(std::vector<Lootentry> &table){
@@ -60,46 +60,46 @@ struct ChestData{
 
 std::vector <ChestData> ChestTypes = {
     {
-        Chestrarity::COMUN,  "Baú Comum",  60,  5,  10,
+        Chestrarity::COMUN,  "Common Chest",  60,  5,  10,
         {
-            {"nada",                            50,  0},
-            {"Maçã",                            25,  1},
-            {"Torta de Melão",                  25,  1},
-            {"Ervas Assasinas",                 25,  1},
-            {"Frutas Estrelares",               25,  1}
+            {"Nothing",                         50,  0},
+            {"Apple",                           25,  1},
+            {"Melon Pie",                       25,  1},
+            {"Assassin Herbs",                  25,  1},
+            {"Starfruit",                       25,  1}
         }
     },
 
     {
-        Chestrarity::INCOMUN,  "Baú Incomum", 20,  15,  25,
+        Chestrarity::INCOMUN,  "Uncommon Chest", 20,  15,  25,
         {
-            {"nada",                            30,  0},
-            {"Maçã",                            40,  2},
-            {"Torta de Melão",                  40,  1},
-            {"Ervas Assasinas",                 40,  2},
-            {"Frutas Estrelares",               40,  1}
+            {"Nothing",                         30,  0},
+            {"Apple",                           40,  2},
+            {"Melon Pie",                       40,  1},
+            {"Assassin Herbs",                  40,  2},
+            {"Starfruit",                       40,  1}
         }
     },
 
     {
-        Chestrarity::RARE,  "Baú Incomum",  6,  35,  50,
+        Chestrarity::RARE,  "Rare Chest",  6,  35,  50,
         {
-            {"nada",                            10,  0},
-            {"Maçã",                            50,  2},
-            {"Torta de Melão",                  40,  3},
-            {"Ervas Assasinas",                 50,  2},
-            {"Frutas Estrelares",               50,  3}
+            {"Nothing",                         10,  0},
+            {"Apple",                           50,  2},
+            {"Melon Pie",                       40,  3},
+            {"Assassin Herbs",                  50,  2},
+            {"Starfruit",                       50,  3}
         }
     },
 
     {
-        Chestrarity::EPIC,  "Baú Épico",  2,  75,  100,
+        Chestrarity::EPIC,  "Epic Chest",  2,  75,  100,
         {
-            {"nada",                            0,  0},
-            {"Maçã",                            70,  4},
-            {"Torta de Melão",                  50,  5},
-            {"Ervas Assasinas",                 60,  5},
-            {"Frutas Estrelares",               70,  5}
+            {"Nothing",                         0,  0},
+            {"Apple",                           70,  4},
+            {"Melon Pie",                       50,  5},
+            {"Assassin Herbs",                  60,  5},
+            {"Starfruit",                       70,  5}
         }
     }
 };
@@ -124,12 +124,12 @@ ChestData &choseChest(){
 void openChest(){
     ChestData &bau = choseChest();
 
-    std::cout << "\n  Voce encontrou um " << bau.name << "!\n";
+    std::cout << "\n  You found a " << bau.name << "!\n";
 
     /* 2. coin — valor aleatório dentro do range */
     int coin = bau.coinMin + rand() % (bau.coinMax - bau.coinMin + 1);
     CurrentCoin += coin;
-    std::cout << "  + " << coin << " coin\n";
+    std::cout << "  + " << coin << " coins\n";
 
     /* 3. loot — rolagem ponderada */
     Lootentry recompensa = playLoot(bau.lootTable);
@@ -139,6 +139,6 @@ void openChest(){
                   << "x " << recompensa.name << "\n";
         /* adicionar ao inventário aqui */
     } else {
-        std::cout << "  O baú estava vazio...\n";
+        std::cout << "  The chest was empty...\n";
     }
 }

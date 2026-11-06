@@ -64,24 +64,24 @@ class setEffects : virtual public HP, virtual public Mana {
 protected:
     std::vector<ConsumableItem> effectsTable = { 
         /*         id                | dmg | crt | heal | Shld | spd | mana | turn |  name*/
-        { ConsumableID::NONE,         { 0,     0,    0,     0,     0,    0,     0},    "Nada"},
-        { ConsumableID::APPLE,         {0,     0,    26,    0,     0,    0,     0},    "Maçã"},
-        { ConsumableID::MELON_PIE,     {0,     0,    30,    5,     0,    0,     3},    "Torta de Melão"},
-        { ConsumableID::ASSASIN_HERB, {18,    10,    0,     0,    12,    0,     3},    "Erva assasina"},
-        { ConsumableID::STAR_FRUIT,   {22,     0,    0,     0,     0,   50,     3},    "Fruta das Estrelas"}
+        { ConsumableID::NONE,         { 0,     0,    0,     0,     0,    0,     0},    "None"},
+        { ConsumableID::APPLE,         {0,     0,    26,    0,     0,    0,     0},    "Apple"},
+        { ConsumableID::MELON_PIE,     {0,     0,    30,    5,     0,    0,     3},    "Melon Pie"},
+        { ConsumableID::ASSASIN_HERB, {18,    10,    0,     0,    12,    0,     3},    "Assassin Herb"},
+        { ConsumableID::STAR_FRUIT,   {22,     0,    0,     0,     0,   50,     3},    "Starfruit"}
     };
 
     std::vector<PotionItem> potionTable = {
         /*         id                | dmg | crt | heal | Shld | spd | mana | turn |  name*/
-        { PotionID::HEALTH_P,         {0,     0,    20,    0,     0,    0,     0},    "Poção de Vida Pequena"},
-        { PotionID::HEALTH_M,         {0,     0,    50,    0,     0,    0,     0},    "Poção de Vida Média"},
-        { PotionID::HEALTH_G,         {0,     0,   100,    0,     0,    0,     0},    "Poção de Vida Grande"},
-        { PotionID::MANA_P,           {0,     0,     0,    0,     0,   20,     0},    "Poção de Mana Pequena"},
-        { PotionID::MANA_M,           {0,     0,     0,    0,     0,   50,     0},    "Poção de Mana Média"},
-        { PotionID::MANA_G,           {0,     0,     0,    0,     0,   100,    0},    "Poção de Mana Grande"},
-        { PotionID::STRENGTH_P ,      {10,    5,     0,    5 ,   -5 ,   -5 ,   3},    "Poção de Força Pequena"},
-        { PotionID::STRENGTH_M ,      {20 ,   10 ,   0 ,   10 , -10 ,   -10 ,   3},    "Poção de Força Média"},
-        { PotionID::STRENGTH_G ,      {30 ,   15 ,   0 ,   15 , -15 ,   -15 ,   3},    "Poção de Força Grande"}
+        { PotionID::HEALTH_P,         {0,     0,    20,    0,     0,    0,     0},    "Small Health Potion"},
+        { PotionID::HEALTH_M,         {0,     0,    50,    0,     0,    0,     0},    "Medium Health Potion"},
+        { PotionID::HEALTH_G,         {0,     0,   100,    0,     0,    0,     0},    "Large Health Potion"},
+        { PotionID::MANA_P,           {0,     0,     0,    0,     0,   20,     0},    "Small Mana Potion"},
+        { PotionID::MANA_M,           {0,     0,     0,    0,     0,   50,     0},    "Medium Mana Potion"},
+        { PotionID::MANA_G,           {0,     0,     0,    0,     0,   100,    0},    "Large Mana Potion"},
+        { PotionID::STRENGTH_P ,      {10,    5,     0,    5 ,   -5 ,   -5 ,   3},    "Small Strength Potion"},
+        { PotionID::STRENGTH_M ,      {20 ,   10 ,   0 ,   10 , -10 ,   -10 ,   3},    "Medium Strength Potion"},
+        { PotionID::STRENGTH_G ,      {30 ,   15 ,   0 ,   15 , -15 ,   -15 ,   3},    "Large Strength Potion"}
     };
 
 public:
@@ -113,12 +113,12 @@ public:
 
     std::string getConsumableName(ConsumableID id) const {
         auto* effect = getEffect(id);
-        return effect ? effect->name : "Desconhecido";
+        return effect ? effect->name : "Unknown";
     }
 
     std::string getPotionName(PotionID id) const {
         auto* potion = getPotion(id);
-        return potion ? potion->name : "Desconhecido";
+        return potion ? potion->name : "Unknown";
     }
 
     // ========== APLICAÇÃO DE EFEITOS ==========

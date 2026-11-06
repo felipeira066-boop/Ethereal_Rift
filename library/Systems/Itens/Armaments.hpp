@@ -28,7 +28,7 @@ class ArmamentBase{
         infoArmament CurrentArmament;
     public:
         ArmamentBase () {
-            CurrentArmament = { static_cast <T> (0), "Nenhum", {0, 0, 0, 0, 0}};
+            CurrentArmament = { static_cast <T> (0), "None", {0, 0, 0, 0, 0}};
         }
 
         bool equip(T id){
@@ -36,12 +36,12 @@ class ArmamentBase{
 
                 if(itemIndex < 0 ||
                    static_cast<std::size_t>(itemIndex) >= ArmamentsTable.size()) {
-                    std::cout << "Equipamento invalido!\n";
+                    std::cout << "Invalid equipment!\n";
                     return false;
                 }
                 else {
                     CurrentArmament = ArmamentsTable[static_cast<std::size_t>(itemIndex)];
-                    std::cout << "Novo item equipado: " << CurrentArmament.name << "\n";
+                    std::cout << "New item equipped: " << CurrentArmament.name << "\n";
                     return true;
                 }
             }
@@ -117,10 +117,10 @@ class warriorArmament : public ArmamentBase<warrior_ArmamentID>{
         warriorArmament(){  
             ArmamentsTable = {
             /*       ID                                      NOME                 VIG  DEF VEL FOR INT*/
-                {warrior_ArmamentID::NONE,                  "NADA",                 {0,  0,  0,  0,  0}},
-                {warrior_ArmamentID::GRASS_BLADE,           "Lamina de Grama",      {0,  0,  1,  2,  0}},
-                {warrior_ArmamentID::WOOD_AXE,              "Machado de Madeira",   {0,  2,  0,  2,  0}},
-                {warrior_ArmamentID::SPEAR,                 "Lança",                {0,  1,  2,  4,  0}}
+                {warrior_ArmamentID::NONE,                  "None",                 {0,  0,  0,  0,  0}},
+                {warrior_ArmamentID::GRASS_BLADE,           "Grass Blade",          {0,  0,  1,  2,  0}},
+                {warrior_ArmamentID::WOOD_AXE,              "Wooden Axe",            {0,  2,  0,  2,  0}},
+                {warrior_ArmamentID::SPEAR,                 "Spear",                {0,  1,  2,  4,  0}}
             };
             CurrentArmament = ArmamentsTable[0];
         }
@@ -133,10 +133,10 @@ class hunterArmament: public ArmamentBase<hunter_ArmamentID>{
     public:
         hunterArmament(){
             ArmamentsTable = {
-                {hunter_ArmamentID::NONE,                "NADA",                  {0,  0,  0,  0,  0}},
-                {hunter_ArmamentID::WOOD_BOW,            "Arco de Madeira",       {0,  0,  2,  2,  0}},
-                {hunter_ArmamentID::APRENTICE_KNIVES,    "Facas do Aprendiz",     {0,  0,  5,  1,  0}},
-                {hunter_ArmamentID::OLD_GUN,             "Arma Velha",            {0,  0,  3,  3,  0}}
+                {hunter_ArmamentID::NONE,                "None",                  {0,  0,  0,  0,  0}},
+                {hunter_ArmamentID::WOOD_BOW,            "Wooden Bow",            {0,  0,  2,  2,  0}},
+                {hunter_ArmamentID::APRENTICE_KNIVES,    "Apprentice's Knives",   {0,  0,  5,  1,  0}},
+                {hunter_ArmamentID::OLD_GUN,             "Old Gun",               {0,  0,  3,  3,  0}}
             };
             CurrentArmament = ArmamentsTable[0];
         }
@@ -151,10 +151,10 @@ class mageArmament : public ArmamentBase<mage_ArmamentID>{
         mageArmament(){
             ArmamentsTable = {
                 /*          id                       name                  vig def vel for int*/
-                {mage_ArmamentID::NONE,           "NADA",                 {0,  0,  0,  0,  0}},
-                {mage_ArmamentID::WOOD_STAFF,     "Cajado de Madeira",    {0,  1,  0,  0,  2}},
-                {mage_ArmamentID::mage_TOME,      "Tomo do Bruxo",        {1,  0,  0,  0,  4}},
-                {mage_ArmamentID::WIND_ORB,       "Orb dos ventos",       {0,  2,  1,  0,  5}}
+                {mage_ArmamentID::NONE,           "None",                 {0,  0,  0,  0,  0}},
+                {mage_ArmamentID::WOOD_STAFF,     "Wooden Staff",         {0,  1,  0,  0,  2}},
+                {mage_ArmamentID::mage_TOME,      "Warlock's Tome",       {1,  0,  0,  0,  4}},
+                {mage_ArmamentID::WIND_ORB,       "Wind Orb",             {0,  2,  1,  0,  5}}
             };
             CurrentArmament = ArmamentsTable[0];
         }
@@ -168,10 +168,10 @@ class clericArmament : public ArmamentBase <cleric_ArmamentID>{
         clericArmament(){
             ArmamentsTable = {
                 /*          id                       name                   vig def vel for int*/
-                {cleric_ArmamentID::NONE,           "NADA",                  {0,  0,  0,  0,  0}},
-                {cleric_ArmamentID::MACE,           "Maça",                  {2,  4,  0,  0,  0}},
-                {cleric_ArmamentID::WAR_HAMMER,     "Martelo de Guerra",     {2,  3,  0,  2,  0}},
-                {cleric_ArmamentID::FLAIL,          "Mangual",               {0,  2,  1,  2,  0}}
+                {cleric_ArmamentID::NONE,           "None",                 {0,  0,  0,  0,  0}},
+                {cleric_ArmamentID::MACE,           "Mace",                 {2,  4,  0,  0,  0}},
+                {cleric_ArmamentID::WAR_HAMMER,     "War Hammer",           {2,  3,  0,  2,  0}},
+                {cleric_ArmamentID::FLAIL,          "Flail",                {0,  2,  1,  2,  0}}
             };
             CurrentArmament = ArmamentsTable[0];
         }

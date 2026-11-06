@@ -13,8 +13,11 @@ void setPerfilState::initBackground(){
     this->background.setFillColor(theme::darkOliveGreen);
 }
 void setPerfilState::initFonts(){
-    if (!this->font.openFromFile("Fonts/GeistPixel-Regular-VariableFont_ELSH.ttf")) {
+    if (!this->font.openFromFile("Fonts/slkscr.ttf")) {
         throw "ERROR SETPERFILSTATE LOADING FONT";
+    }
+    if (!this->boldFont.openFromFile("Fonts/slkscrb.ttf")) {
+        throw "ERROR SETPERFILSTATE LOADING BOLD FONT";
     }
 }
 void setPerfilState::initKeybinds(){
@@ -81,7 +84,7 @@ void setPerfilState::initRadarChart(){
     this->radarValues.setOutlineThickness(3.f);
 
     const std::array<std::string, 5> names = {
-        "VIG", "DEF", "VEL", "FOR", "INT"
+        "VIT", "DEF", "SPD", "STR", "INT"
     };
     this->radarLabels.clear();
     for (std::size_t index = 0; index < names.size(); ++index) {
@@ -110,7 +113,7 @@ setPerfilState::setPerfilState(sf::RenderWindow* window, std::map<std::string, i
       selectedRaceText(this->font, "", 28),
       selectedClassText(this->font, "", 28),
       nameText(this->font, "", 24),
-      instructionsText(this->font, "", 20)
+      instructionsText(this->boldFont, "", 20)
 {
     this->initVariables();
     this->initBackground();

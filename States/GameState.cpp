@@ -96,15 +96,18 @@ GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* suppo
       character(character),
       characterText(this->font, "", 28),
       statsText(this->font, "", 24),
-      arenaText(this->font, "", 28),
+      arenaText(this->boldFont, "", 28),
       monsterText(this->font, "", 20),
       hitboxText(this->font, "", 18)
 {
     this->initKeybinds();
     this->initTextures();
     this->initPlayer();
-    if (!this->font.openFromFile("Fonts/GeistPixel-Regular-VariableFont_ELSH.ttf")) {
+    if (!this->font.openFromFile("Fonts/slkscr.ttf")) {
         throw "ERROR::GAME_STATE::INIT_FONT";
+    }
+    if (!this->boldFont.openFromFile("Fonts/slkscrb.ttf")) {
+        throw "ERROR::GAME_STATE::INIT_BOLD_FONT";
     }
     this->characterText.setString(
         this->character.name + " - " + this->character.race + " " + this->character.characterClass);
@@ -113,10 +116,10 @@ GameState::GameState(sf::RenderWindow* window, std::map<std::string, int>* suppo
     this->characterText.setPosition(sf::Vector2f(64.f, 54.f));
 
     std::stringstream stats;
-    stats << "VIG: " << this->character.stats[0] << "\n"
+    stats << "VIT: " << this->character.stats[0] << "\n"
           << "DEF: " << this->character.stats[1] << "\n"
-          << "VEL: " << this->character.stats[2] << "\n"
-          << "FOR: " << this->character.stats[3] << "\n"
+          << "SPD: " << this->character.stats[2] << "\n"
+          << "STR: " << this->character.stats[3] << "\n"
           << "INT: " << this->character.stats[4];
     this->statsText.setString(stats.str());
     this->statsText.setCharacterSize(18);

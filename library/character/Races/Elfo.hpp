@@ -23,12 +23,12 @@ class Elf {
     };
     public:
 
-    data_subElf Current_Race= {id_subElf::BOOD_ELF,  "Elfo de Sangue",  3,  1,  2,  2, 3};
+    data_subElf Current_Race= {id_subElf::BOOD_ELF,  "Blood Elf",  3,  1,  2,  2, 3};
 
     std::vector <data_subElf> ElfTable{
-        {id_subElf::BOOD_ELF,      "Elfo de Sangue",      3,  1,  2,  2,  3},
-        {id_subElf::MOUNTAIN_ELF,  "Elfo das Montanhas",  2,  1,  3,  4,  2},
-        {id_subElf::SNOW_ELF,      "Elfo das neves",      3,  2,  4,  1,  2}
+        {id_subElf::BOOD_ELF,      "Blood Elf",       3,  1,  2,  2,  3},
+        {id_subElf::MOUNTAIN_ELF,  "Mountain Elf",    2,  1,  3,  4,  2},
+        {id_subElf::SNOW_ELF,      "Snow Elf",        3,  2,  4,  1,  2}
     };
     bool beRace(id_subElf sE){
         long unsigned int Elfdex = static_cast <int> (sE);
@@ -37,7 +37,7 @@ class Elf {
         data_subElf select = ElfTable[Elfdex];
 
         Current_Race = select;
-        std::cout << "  Raça definida: " << Current_Race.nome << std::endl;
+        std::cout << "  Race set: " << Current_Race.nome << std::endl;
         return true;
     }
 
@@ -52,4 +52,3 @@ class Elf {
     }
     
 };
-

@@ -26,6 +26,7 @@ private:
     /*Variables*/
     sf::RectangleShape background;
     sf::Font font;
+    sf::Font boldFont;
     sf::Text selectedRaceText;
     sf::Text selectedClassText;
     sf::Text nameText;

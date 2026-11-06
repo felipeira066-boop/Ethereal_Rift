@@ -24,11 +24,11 @@ class Human {
 
     public:
 
-    data_subHuman Current_Race = {id_subHuman::JUNGLE_HUMAN,  "Humano da Selva",  2,  2,  2,  3,  2};
+    data_subHuman Current_Race = {id_subHuman::JUNGLE_HUMAN,  "Jungle Human",  2,  2,  2,  3,  2};
 
     std::vector <data_subHuman> HumanTable{
-        {id_subHuman::JUNGLE_HUMAN,    "Humano da Selva",       2,  2,  2,  3,  2},
-        {id_subHuman::MOUNTAIN_HUMAN,  "Humano das Montanhas",  3,  2,  2,  2,  2}
+        {id_subHuman::JUNGLE_HUMAN,    "Jungle Human",       2,  2,  2,  3,  2},
+        {id_subHuman::MOUNTAIN_HUMAN,  "Mountain Human",  3,  2,  2,  2,  2}
     };
 
     bool beRace(id_subHuman sH){
@@ -38,7 +38,7 @@ class Human {
         data_subHuman select = HumanTable[Humandex];
 
         Current_Race = select;
-        std::cout << "  Raça definida: " << Current_Race.nome << std::endl;
+        std::cout << "  Race set: " << Current_Race.nome << std::endl;
         return true;
     }
 
@@ -52,4 +52,3 @@ class Human {
         };
     }
 };
-

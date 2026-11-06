@@ -41,18 +41,17 @@ public:
         uint16_t nivelAntes = Exp::currentLevel;
         getLvl(quant);
 
-        if (Exp::currentLevel > nivelAntes) {
+        for (uint16_t level = nivelAntes; level < Exp::currentLevel; ++level) {
             upStatusWarrior();
-            verificarNovosMovesDesbloqueados(Exp::currentLevel);
+            verificarNovosMovesDesbloqueados(level + 1);
         }
     }
 
     void upStatusWarrior() {
         WaStats.VIG += 2;
-        WaStats.DEF += 1;
+        WaStats.DEF += 2;
         WaStats.VEL += 1;
         WaStats.FOR += 2;
-        WaStats.INT += 1;
 
         finalStats fs = totalStats::contagem(WaStats, globalRaceStats);
         initHP(fs);

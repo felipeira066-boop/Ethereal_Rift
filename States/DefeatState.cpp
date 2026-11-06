@@ -6,10 +6,13 @@ DefeatState::DefeatState(sf::RenderWindow* window,
                          std::map<std::string, int>* supportedKeys,
                          std::stack<State*>* states)
     : State(window, supportedKeys, states),
-      titleText(this->font, "Você perdeu!", 48)
+      titleText(this->boldFont, "You were defeated!", 48)
 {
-    if (!this->font.openFromFile("Fonts/GeistPixel-Regular-VariableFont_ELSH.ttf")) {
+    if (!this->font.openFromFile("Fonts/slkscr.ttf")) {
         throw "ERROR::DEFEAT_STATE::INIT_FONT";
+    }
+    if (!this->boldFont.openFromFile("Fonts/slkscrb.ttf")) {
+        throw "ERROR::DEFEAT_STATE::INIT_BOLD_FONT";
     }
 
     this->initKeybinds();
@@ -28,10 +31,10 @@ DefeatState::DefeatState(sf::RenderWindow* window,
         640.f - this->titleText.getGlobalBounds().size.x / 2.f, 255.f));
 
     this->buttons["EXIT"] = new Button(
-        400.f, 405.f, 210.f, 64.f, &this->font, "Sair",
+        400.f, 405.f, 210.f, 64.f, &this->font, "Exit",
         theme::russet, theme::alloyOrange, theme::camel);
     this->buttons["RETRY"] = new Button(
-        670.f, 405.f, 210.f, 64.f, &this->font, "Jogar novamente",
+        670.f, 405.f, 210.f, 64.f, &this->font, "Play Again",
         theme::russet, theme::alloyOrange, theme::camel);
 }
 

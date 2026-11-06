@@ -29,7 +29,7 @@ void MainMenuState::initKeybinds(){
 }
 
 void MainMenuState::initFonts(){
-    if(!this->font.openFromFile("Fonts/GeistPixel-Regular-VariableFont_ELSH.ttf")){
+    if(!this->font.openFromFile("Fonts/slkscr.ttf")){
         throw("ERROR in the Font Loading!\n");
     }
 }
@@ -76,7 +76,7 @@ MainMenuState::MainMenuState(sf::RenderWindow* window, std::map<std::string, int
     //botão de fechar o jogo
     this->buttons["EXIT_STATE_BTN"] =
         new Button(buttonX, firstButtonY + 2.f * (buttonHeight + buttonSpacing), buttonWidth, buttonHeight,
-            &this->font, "End Game",
+            &this->font, "Quit Game",
             theme::russet,
             theme::alloyOrange,
             theme::camel);

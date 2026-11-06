@@ -63,21 +63,24 @@ BattleState::BattleState(sf::RenderWindow* window,
                          const CharacterConfig& character)
     : State(window, supportedKeys, states),
       character(character),
-      playerNameText(this->font, "", 22),
+      playerNameText(this->boldFont, "", 22),
       playerStatsText(this->font, "", 16),
       playerHpText(this->font, "", 16),
       manaText(this->font, "", 16),
       expText(this->font, "", 16),
       levelText(this->font, "", 18),
-      enemyNameText(this->font, "", 22),
+      enemyNameText(this->boldFont, "", 22),
       enemyHpText(this->font, "", 16),
       messageText(this->font, "", 20),
       weapons(getWeaponsForClass(character.characterClass)),
       armors(getArmorForClass(character.characterClass)),
       enemies(arenaInimigos)
 {
-    if (!this->font.openFromFile("Fonts/GeistPixel-Regular-VariableFont_ELSH.ttf")) {
+    if (!this->font.openFromFile("Fonts/slkscr.ttf")) {
         throw "ERROR::BATTLE_STATE::INIT_FONT";
+    }
+    if (!this->boldFont.openFromFile("Fonts/slkscrb.ttf")) {
+        throw "ERROR::BATTLE_STATE::INIT_BOLD_FONT";
     }
 
     this->initKeybinds();
@@ -134,12 +137,15 @@ void BattleState::selectMoveTable()
 stats BattleState::levelGrowth() const
 {
     if (this->character.characterClass == "Hunter") {
-        return {1, 1, 2, 2, 1};
+        return {1, 1, 2, 2, 0};
+    }
+    if (this->character.characterClass == "Mage") {
+        return {1, 0, 1, 0, 3};
     }
     if (this->character.characterClass == "Cleric") {
-        return {2, 1, 1, 1, 2};
+        return {2, 1, 0, 1, 1};
     }
-    return {2, 1, 1, 2, 1};
+    return {2, 2, 1, 2, 0};
 }
 
 void BattleState::recalculatePlayerStats()
@@ -151,10 +157,10 @@ void BattleState::recalculatePlayerStats()
     this->playerMana.initMana(this->playerFinalStats);
 
     std::stringstream statsText;
-    statsText << "VIG " << this->playerBaseStats.VIG
+    statsText << "VIT " << this->playerBaseStats.VIG
               << "   DEF " << this->playerBaseStats.DEF
-              << "   VEL " << this->playerBaseStats.VEL
-              << "   FOR " << this->playerBaseStats.FOR
+              << "   SPD " << this->playerBaseStats.VEL
+              << "   STR " << this->playerBaseStats.FOR
               << "   INT " << this->playerBaseStats.INT;
     this->playerStatsText.setString(statsText.str());
 }
@@ -246,7 +252,7 @@ void BattleState::initInterface()
 
     this->messageText.setPosition(sf::Vector2f(64.f, 265.f));
     this->messageText.setFillColor(theme::russet);
-    this->messageText.setString("Escolha uma habilidade para iniciar o turno.");
+    this->messageText.setString("Choose an ability to start your turn.");
 
     const float buttonY = 620.f;
     const float buttonWidth = 250.f;
@@ -260,10 +266,10 @@ void BattleState::initInterface()
             (*this->moveTable)[index].nome, idle, hover, active);
     }
     this->buttons["FLEE"] = new Button(
-        844.f, buttonY, 190.f, 56.f, &this->font, "Sair",
+        844.f, buttonY, 190.f, 56.f, &this->font, "Flee",
         theme::russet, theme::alloyOrange, theme::camel);
     this->buttons["INVENTORY"] = new Button(
-        1050.f, buttonY, 190.f, 56.f, &this->font, "Inventario",
+        1050.f, buttonY, 190.f, 56.f, &this->font, "Inventory",
         theme::darkOliveGreen, theme::laurelGreen, theme::camel);
     this->playerNameText.setString(
         this->character.name + " - " + this->character.race + " "
@@ -274,7 +280,7 @@ void BattleState::loadEnemy()
 {
     if (this->enemyIndex >= this->enemies.size()) {
         this->gameFinished = true;
-        this->messageText.setString("Arena concluida! Pressione Sair para retornar.");
+        this->messageText.setString("Arena cleared! Click Flee to return.");
         return;
     }
 
@@ -288,9 +294,9 @@ void BattleState::loadEnemy()
     };
     this->enemyHealth.initHP(this->enemyFinalStats);
     this->enemyNameText.setString(
-        "Inimigo " + std::to_string(this->enemyIndex + 1) + "/" +
+        "Enemy " + std::to_string(this->enemyIndex + 1) + "/" +
         std::to_string(this->enemies.size()) + ": " + this->currentEnemy.nome);
-    this->messageText.setString("Escolha uma habilidade para atacar.");
+    this->messageText.setString("Choose an ability to attack.");
 }
 
 void BattleState::updateBars()
@@ -322,13 +328,13 @@ void BattleState::updateBars()
     this->expText.setString(this->progression.podeSubirNivel()
         ? "XP  " + std::to_string(this->progression.getExp()) + "/" +
             std::to_string(this->progression.getExpMax())
-        : "XP  Nivel maximo");
+        : "XP  Max level");
     this->levelText.setString(
-        "Nivel " + std::to_string(this->progression.getNivel()) +
-        "   |   Proximo nivel: " +
+        "Level " + std::to_string(this->progression.getNivel()) +
+        "   |   Next level: " +
         (this->progression.podeSubirNivel()
             ? std::to_string(this->progression.getExpMax()) + " XP"
-            : "nivel maximo"));
+            : "Max level"));
     this->enemyHpText.setString(
         "HP  " + std::to_string(this->enemyHealth.getHP()) + "/" +
         std::to_string(this->enemyFinalStats.MaxHP));
@@ -429,7 +435,22 @@ void BattleState::updateButtons()
             this->window, this->supportedKeys, this->states, this->inventory,
             this->weapons, this->armors, this->equippedWeapon,
             this->equippedArmor,
-            [this]() { this->equipSelectedItems(); }));
+            [this]() { this->equipSelectedItems(); },
+            [this](bool isPotion, int itemID) {
+                if (isPotion) {
+                    this->inventory.applyPotion(
+                        static_cast<PotionID>(itemID), this->playerFinalStats,
+                        this->playerCriticalRate, this->playerHealth,
+                        this->playerMana);
+                } else {
+                    this->inventory.applyConsumable(
+                        static_cast<ConsumableID>(itemID),
+                        this->playerFinalStats, this->playerCriticalRate,
+                        this->playerHealth, this->playerMana);
+                }
+                this->playerHealth.setShield(this->playerFinalStats.Shield);
+                this->updateBars();
+            }));
     }
 }
 
@@ -442,17 +463,17 @@ void BattleState::useMove(std::size_t moveIndex)
     const MoveData& move = (*this->moveTable)[moveIndex];
     if (this->progression.getNivel() < move.nivelMinimo) {
         this->messageText.setString(
-            "Habilidade bloqueada: requer nivel " +
+            "Ability locked: requires level " +
             std::to_string(move.nivelMinimo) + ".");
         return;
     }
     if (move.danoBase > 0 && this->playerMana.CurrentMana == 0) {
         this->messageText.setString(
-            "Mana zerada. Voce nao pode usar ataques.");
+            "No mana left. You cannot use attacks.");
         return;
     }
     if (move.costMana > this->playerMana.CurrentMana) {
-        this->messageText.setString("Mana insuficiente para essa habilidade.");
+        this->messageText.setString("Not enough mana for this ability.");
         return;
     }
 
@@ -470,21 +491,21 @@ void BattleState::useMove(std::size_t moveIndex)
     if (move.curaBase > 0) {
         this->playerHealth.getHeal(move.curaBase);
         this->messageText.setString(
-            move.nome + " restaurou " + std::to_string(move.curaBase) + " HP.");
+            move.nome + " restored " + std::to_string(move.curaBase) + " HP.");
     }
     if (move.danoBase > 0) {
         finalStats attack = this->playerFinalStats;
         attack.Damage += move.danoBase;
         const int previousHp = this->enemyHealth.getHP();
-        this->enemyHealth.takeDamage(attack);
+        this->enemyHealth.takeDamage(attack, this->playerCriticalRate);
         const int damage = previousHp - this->enemyHealth.getHP();
         if (damage > 0) {
             this->flashWhenHit(this->enemyShape, this->enemyHitFlashRemaining,
                                this->enemyHitFlashElapsed);
         }
         this->messageText.setString(
-            move.nome + " causou " + std::to_string(damage) +
-            " de dano em " + this->currentEnemy.nome + ".");
+            move.nome + " dealt " + std::to_string(damage) +
+            " damage to " + this->currentEnemy.nome + ".");
     }
 
     if (!this->enemyHealth.isAlive()) {
@@ -515,8 +536,8 @@ void BattleState::playEnemyTurn()
                            this->playerHitFlashElapsed);
     }
     this->messageText.setString(
-        this->currentEnemy.nome + " atacou e causou " +
-        std::to_string(damage) + " de dano.");
+        this->currentEnemy.nome + " attacked and dealt " +
+        std::to_string(damage) + " damage.");
     if (this->playerHealth.isAlive()) {
         this->playerMana.getMana(2, this->playerFinalStats.MaxMana);
     }
@@ -547,13 +568,13 @@ void BattleState::finishEnemy()
     ++this->enemyIndex;
     this->loadEnemy();
     this->messageText.setString(
-        "Voce derrotou " + defeatedEnemy + " e ganhou " +
-        std::to_string(expReward) + " XP e " +
-        std::to_string(coinReward) + " moedas." +
+        "You defeated " + defeatedEnemy + " and earned " +
+        std::to_string(expReward) + " XP and " +
+        std::to_string(coinReward) + " coins." +
         (this->progression.getNivel() > previousLevel
-            ? " Novo nivel: " + std::to_string(this->progression.getNivel()) + "!"
+            ? " New level: " + std::to_string(this->progression.getNivel()) + "!"
             : "") +
-        (this->gameFinished ? " Arena concluida!" : ""));
+        (this->gameFinished ? " Arena cleared!" : ""));
 
     this->states->push(new ShopState(
         this->window, this->supportedKeys, this->states, this->character,

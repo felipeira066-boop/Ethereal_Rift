@@ -9,7 +9,7 @@ std::string openManual;
 std::string inManual;
 
 void openManual(){
-    cout << "  Você quer ver o Manual do Jogo?\n";
+    cout << "  Would you like to view the game manual?\n";
     cout << "  [Y/n]\n";
     cin << openManual;
 
@@ -18,9 +18,9 @@ void openManual(){
 }
 
 void Manual(){
-    cout << "  [Q] — | Instruções aos Status  |\n";
-    cout << "  [W] — | Instruções às Classes  |\n";
-    cout << "  [R] — | Instruções às Batalhas |\n";
+    cout << "  [Q] — | Stats Guide   |\n";
+    cout << "  [W] — | Class Guide   |\n";
+    cout << "  [R] — | Battle Guide  |\n";
 
     cint << inManual;
 

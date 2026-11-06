@@ -53,7 +53,7 @@ public:
                   << expParaProximoNivel() << ")\n";
 
         for (uint16_t level = previousLevel; level < currentLevel; ++level) {
-            std::cout << "\n  *** LEVEL UP! Nível atual: "
+            std::cout << "\n  *** LEVEL UP! Current level: "
                       << level + 1 << " ***\n";
         }
     }

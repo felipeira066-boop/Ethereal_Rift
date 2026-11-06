@@ -16,7 +16,7 @@ std::vector<EquipmentOption> getEquipmentOptions(
     const Equipment& equipment)
 {
     std::vector<EquipmentOption> options = {
-        {"Nenhum", {0, 0, 0, 0, 0}}
+        {"None", {0, 0, 0, 0, 0}}
     };
 
     for (int id = 1; id <= 3; ++id) {

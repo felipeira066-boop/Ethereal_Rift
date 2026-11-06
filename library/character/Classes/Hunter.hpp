@@ -41,9 +41,9 @@ public:
         uint16_t nivelAntes = Exp::currentLevel;
         getLvl(quant);
 
-        if (Exp::currentLevel > nivelAntes) {
+        for (uint16_t level = nivelAntes; level < Exp::currentLevel; ++level) {
             upStatusHunter();
-            verificarNovosMovesDesbloqueados(Exp::currentLevel);
+            verificarNovosMovesDesbloqueados(level + 1);
         }
     }
 
@@ -53,7 +53,6 @@ public:
         HuStats.DEF += 1;
         HuStats.VEL += 2;
         HuStats.FOR += 2;
-        HuStats.INT += 1;
 
         finalStats fs = totalStats::contagem(HuStats, globalRaceStats);
 

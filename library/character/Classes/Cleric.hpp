@@ -44,9 +44,9 @@ public:
         uint16_t nivelAntes = Exp::currentLevel;
         getLvl(quant);
 
-        if (Exp::currentLevel > nivelAntes) {
+        for (uint16_t level = nivelAntes; level < Exp::currentLevel; ++level) {
             upStatusCleric();
-            verificarNovosMovesDesbloqueados(Exp::currentLevel);
+            verificarNovosMovesDesbloqueados(level + 1);
         }
     }
 
@@ -54,9 +54,8 @@ public:
 
         ClStats.VIG += 2;
         ClStats.DEF += 1;
-        ClStats.VEL += 1;
         ClStats.FOR += 1;
-        ClStats.INT += 2;
+        ClStats.INT += 1;
 
         finalStats fs = totalStats::contagem(ClStats, globalRaceStats);
 

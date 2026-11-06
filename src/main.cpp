@@ -27,13 +27,13 @@ void printSep() {
 
 int escolherClasse() {
     printSep();
-    std::cout << "  ESCOLHA SUA CLASSE\n\n";
-    std::cout << "  [1] GUERREIRO        • Defesa e Força altas - Ideal para combate direto\n";
-    std::cout << "  [2] CAÇADOR          • Velocidade e Força medianas - Ataques rápidos\n";
-    std::cout << "  [3] MAGO             • Inteligência alta - Magia e dano de longo alcance\n";
-    std::cout << "  [4] CLÉRIGO          • Vigor alto - Pode se curar e ajudar aliados\n";
+    std::cout << "  CHOOSE YOUR CLASS\n\n";
+    std::cout << "  [1] WARRIOR          • High defense and strength - Ideal for direct combat\n";
+    std::cout << "  [2] HUNTER            • Balanced speed and strength - Fast attacks\n";
+    std::cout << "  [3] MAGE              • High intelligence - Long-range magic and damage\n";
+    std::cout << "  [4] CLERIC            • High vitality - Can heal and support allies\n";
     printSep();
-    std::cout << "  Qual é sua escolha, Aventureiro? > ";
+    std::cout << "  What is your choice, Adventurer? > ";
 
     int op;
     std::cin >> op;
@@ -42,12 +42,12 @@ int escolherClasse() {
 
 int escolherRaca(){
     printSep();
-    std::cout << "  ESCOLHA SUA RAÇA \n\n";
-    std::cout << "  [1] HUMANO   • Versáteis e equilibrados - Bom para iniciantes\n";
-    std::cout << "  [2] ELFO     • Ágeis e mágicos - Velocidade e inteligência\n";
-    std::cout << "  [3] ANÃO     • Fortes e resistentes - Defesa e vigor\n";
+    std::cout << "  CHOOSE YOUR RACE \n\n";
+    std::cout << "  [1] HUMAN   • Versatile and balanced - Great for beginners\n";
+    std::cout << "  [2] ELF     • Agile and magical - Speed and intelligence\n";
+    std::cout << "  [3] DWARF   • Strong and resilient - Defense and vitality\n";
     printSep();
-    std::cout << "  Qual raça você escolhe? > ";
+    std::cout << "  Which race do you choose? > ";
 
     int op;
     std::cin >> op;
@@ -84,9 +84,9 @@ int main() {
 
     // nome do personagem 
     std::string nome;
-    std::cout << "\n  Qual é seu nome, viajante? > ";
+    std::cout << "\n  What is your name, traveler? > ";
     std::getline(std::cin, nome);
-    if (nome.empty()) nome = "Herói";
+    if (nome.empty()) nome = "Hero";
 
     // Escolha das Raças
     int raca = escolherRaca();
@@ -94,22 +94,22 @@ int main() {
     switch(raca){
         case 1: {
             Human humano;
-            std::cout << "\n  Escolha sua linhagem de Humano:\n\n";
-            std::cout << "  [1]  Humano da Selva      • Equilibrado com bônus em Força\n";
-            std::cout << "  [2]  Humano das Montanhas • Equilibrado com bônus em Vigor\n";
+            std::cout << "\n  Choose your human lineage:\n\n";
+            std::cout << "  [1]  Jungle Human      • Balanced with a strength bonus\n";
+            std::cout << "  [2]  Mountain Human    • Balanced with a vitality bonus\n";
             std::cout << "  > ";
             int subRaca;
             std::cin >> subRaca;
             if(subRaca == 1) {
                 humano.beRace(id_subHuman::JUNGLE_HUMAN);
-                std::cout << "   Você é um Humano da Selva! Prepare-se para as aventuras...\n";
+                std::cout << "   You are a Jungle Human! Prepare for adventure...\n";
             }
             else if(subRaca == 2) {
                 humano.beRace(id_subHuman::MOUNTAIN_HUMAN);
-                std::cout << "   Você é um Humano das Montanhas! Sua resistência é incomparável.\n";
+                std::cout << "   You are a Mountain Human! Your endurance is unmatched.\n";
             }
             else {
-                std::cout << "   Escolha inválida! Assumindo Humano da Selva.\n";
+                std::cout << "   Invalid choice! Defaulting to Jungle Human.\n";
                 humano.beRace(id_subHuman::JUNGLE_HUMAN);
             }
 
@@ -119,27 +119,27 @@ int main() {
 
         case 2:{
             Elf elfo;
-            std::cout << "\n  Escolha sua linhagem de Elfo:\n\n";
-            std::cout << "  [1]  Elfo de Sangue       • Vigor e Inteligência elevados\n";
-            std::cout << "  [2]  Elfo das Montanhas   • Velocidade e Força superiores\n";
-            std::cout << "  [3]  Elfo das Neves       • Resistência e Velocidade aprimoradas\n";
+            std::cout << "\n  Choose your elf lineage:\n\n";
+            std::cout << "  [1]  Blood Elf       • High vitality and intelligence\n";
+            std::cout << "  [2]  Mountain Elf    • Superior speed and strength\n";
+            std::cout << "  [3]  Snow Elf        • Improved endurance and speed\n";
             std::cout << "  > ";
             int subRaca;
             std::cin >> subRaca;
             if(subRaca == 1) {
                 elfo.beRace(id_subElf::BOOD_ELF);
-                std::cout << "   Você é um Elfo de Sangue! Poder ancestral flui por suas veias.\n";
+                std::cout << "   You are a Blood Elf! Ancestral power flows through your veins.\n";
             }
             else if(subRaca == 2) {
                 elfo.beRace(id_subElf::MOUNTAIN_ELF);
-                std::cout << "   Você é um Elfo das Montanhas! A velocidade é sua aliada.\n";
+                std::cout << "   You are a Mountain Elf! Speed is your ally.\n";
             }
             else if(subRaca == 3) {
                 elfo.beRace(id_subElf::SNOW_ELF);
-                std::cout << "   Você é um Elfo das Neves! Frio e graça definem você.\n";
+                std::cout << "   You are a Snow Elf! Cold and grace define you.\n";
             }
             else {
-                std::cout << "   Escolha inválida! Assumindo Elfo de Sangue.\n";
+                std::cout << "   Invalid choice! Defaulting to Blood Elf.\n";
                 elfo.beRace(id_subElf::BOOD_ELF);   
             }
 
@@ -150,27 +150,27 @@ int main() {
 
         case 3: {
             Dwarf anao;
-            std::cout << "\n  Escolha sua linhagem de Anão:\n\n";
-            std::cout << "  [1]  Anão Ferreiro       • Vigor e Defesa superiores\n";
-            std::cout << "  [2]  Anão das Colinas    • Defesa e Força aumentadas\n";
-            std::cout << "  [3]  Anão do Subsolo     • Vigor e Força das profundezas\n";
+            std::cout << "\n  Choose your dwarf lineage:\n\n";
+            std::cout << "  [1]  Forge Dwarf        • Superior vitality and defense\n";
+            std::cout << "  [2]  Hill Dwarf         • Increased defense and strength\n";
+            std::cout << "  [3]  Underground Dwarf  • Deep-rooted vitality and strength\n";
             std::cout << "  > ";
             int subRaca;
             std::cin >> subRaca;
             if(subRaca == 1) {
                 anao.beRace(id_subDwarf::FORGE_DWARF);
-                std::cout << "   Você é um Anão Ferreiro! Seus músculos podem quebrar montanhas.\n";
+                std::cout << "   You are a Forge Dwarf! Your muscles can break mountains.\n";
             }
             else if(subRaca == 2) {
                 anao.beRace(id_subDwarf::COULINS_DWARF);
-                std::cout << "   Você é um Anão das Colinas! Defesa inabalável é sua marca.\n";
+                std::cout << "   You are a Hill Dwarf! Unbreakable defense is your hallmark.\n";
             }
             else if(subRaca == 3) {
                 anao.beRace(id_subDwarf::UNDERGROUND_DWARF);
-                std::cout << "   Você é um Anão do Subsolo! Poder primordial corre em suas veias.\n";
+                std::cout << "   You are an Underground Dwarf! Primal power runs through your veins.\n";
             }
             else {
-                std::cout << "   Escolha inválida! Assumindo Anão Ferreiro.\n";
+                std::cout << "   Invalid choice! Defaulting to Forge Dwarf.\n";
                 anao.beRace(id_subDwarf::FORGE_DWARF);
             }
             globalRaceStats = anao.getRaceStats();
@@ -209,7 +209,7 @@ int main() {
             break;
         }
         default: {
-            std::cout << "   Classe inválida! Você despertará como um Guerreiro...\n";
+            std::cout << "   Invalid class! You will awaken as a Warrior...\n";
             Warrior guerreiro;
             arena(guerreiro, nome);
             break;

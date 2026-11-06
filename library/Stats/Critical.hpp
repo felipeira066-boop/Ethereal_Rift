@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
@@ -7,15 +8,16 @@
 class critical{
     public:
     int gerarCritico(){
-        return rand ()%26; 
+        return rand() % 100;
     }
 
-    void CriticalDamage(finalStats &fs){
-        int critical_rate = gerarCritico() + fs.Speed; // A velocidade do jogador aumenta a chance de crítico
+    void CriticalDamage(finalStats &fs, int criticalRateBonus = 0){
+        const int criticalChance =
+            std::clamp(5 + static_cast<int>(fs.Speed) + criticalRateBonus, 0, 50);
 
-        if (critical_rate >= 25){
+        if (gerarCritico() < criticalChance){
             fs.Damage *= 2;
-            std::cout << "  > Crítico!\n";
+            std::cout << "  > Critical hit!\n";
         }
         return;
     }

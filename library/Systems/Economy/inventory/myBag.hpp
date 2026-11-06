@@ -28,7 +28,7 @@ public:
     // ========== ADICIONAR ITEMS ==========
     bool addConsumable(ConsumableID id, int quantity = 1) {
         if (!setConsumable(id) || id == ConsumableID::NONE) {
-            std::cout << "  Item consumível inválido!" << std::endl;
+            std::cout << "  Invalid consumable item!" << std::endl;
             return false;
         }
 
@@ -36,18 +36,18 @@ public:
         int currentQty = consumables[key];
         
         if (currentQty + quantity > maxCapacity) {
-            std::cout << "  Inventário cheio!" << std::endl;
+            std::cout << "  Inventory is full!" << std::endl;
             return false;
         }
 
         consumables[key] += quantity;
-        std::cout << "  "<< quantity << "x " << getConsumableName(id) << " adicionado!" << std::endl;
+        std::cout << "  "<< quantity << "x " << getConsumableName(id) << " added!" << std::endl;
         return true;
     }
 
     bool addPotion(PotionID id, int quantity = 1) {
         if (!setPotion(id)) {
-            std::cout << "  Poção inválida!" << std::endl;
+            std::cout << "  Invalid potion!" << std::endl;
             return false;
         }
 
@@ -55,12 +55,12 @@ public:
         int currentQty = potions[key];
         
         if (currentQty + quantity > maxCapacity) {
-            std::cout << "  Inventário cheio!" << std::endl;
+            std::cout << "  Inventory is full!" << std::endl;
             return false;
         }
 
         potions[key] += quantity;
-        std::cout << "  " << quantity << "x " << getPotionName(id) << " adicionado!" << std::endl;
+        std::cout << "  " << quantity << "x " << getPotionName(id) << " added!" << std::endl;
         return true;
     }
 
@@ -69,13 +69,13 @@ public:
         std::string key = getConsumableKey(id);
         
         if (consumables.find(key) == consumables.end() || consumables[key] == 0) {
-            std::cout << "  Você não possui este item!" << std::endl;
+            std::cout << "  You do not have this item!" << std::endl;
             std::cin.get();
             return false;
         }
 
         if (consumables[key] < quantity) {
-            std::cout << "  Quantidade insuficiente! (Você tem " << consumables[key] << ")" << std::endl;
+            std::cout << "  Not enough items! (You have " << consumables[key] << ")" << std::endl;
             std::cin.get();
             return false;
         }
@@ -85,7 +85,7 @@ public:
             consumables.erase(key);
         }
 
-        std::cout << "  " << quantity << "x " << getConsumableName(id) << " a menos!" << std::endl;
+        std::cout << "  " << quantity << "x " << getConsumableName(id) << " removed!" << std::endl;
         std::cin.get();
         return true;
     }
@@ -94,13 +94,13 @@ public:
         std::string key = getPotionKey(id);
         
         if (potions.find(key) == potions.end() || potions[key] == 0) {
-            std::cout << "  Você não possui esta poção!" << std::endl;
+            std::cout << "  You do not have this potion!" << std::endl;
             std::cin.get();
             return false;
         }
 
         if (potions[key] < quantity) {
-            std::cout << "  Quantidade insuficiente! (Você tem " << potions[key] << ")" << std::endl;
+            std::cout << "  Not enough potions! (You have " << potions[key] << ")" << std::endl;
             std::cin.get();
             return false;
         }
@@ -110,8 +110,34 @@ public:
             potions.erase(key);
         }
 
-        std::cout << "  " << quantity << "x " << getPotionName(id) << " a menos!" << std::endl;
+        std::cout << "  " << quantity << "x " << getPotionName(id) << " removed!" << std::endl;
         std::cin.get();
+        return true;
+    }
+
+    bool consumeConsumable(ConsumableID id) {
+        const std::string key = getConsumableKey(id);
+        auto item = consumables.find(key);
+        if (item == consumables.end() || item->second <= 0) {
+            return false;
+        }
+
+        if (--item->second == 0) {
+            consumables.erase(item);
+        }
+        return true;
+    }
+
+    bool consumePotion(PotionID id) {
+        const std::string key = getPotionKey(id);
+        auto item = potions.find(key);
+        if (item == potions.end() || item->second <= 0) {
+            return false;
+        }
+
+        if (--item->second == 0) {
+            potions.erase(item);
+        }
         return true;
     }
 
@@ -122,7 +148,7 @@ public:
         }
 
         applyConsumable(id, fs, critical_rate, hp, mn);
-        std::cout << "  Efeito de " << getConsumableName(id) << " aplicado!" << std::endl;
+        std::cout << "  Effect of " << getConsumableName(id) << " applied!" << std::endl;
         std::cin.get();
         return true;
     }
@@ -133,7 +159,7 @@ public:
         }
 
         applyPotion(id, fs, critical_rate, hp, mn);
-        std::cout << "  Efeito de " << getPotionName(id) << " aplicado!" << std::endl;
+        std::cout << "  Effect of " << getPotionName(id) << " applied!" << std::endl;
         std::cin.get();
         return true;
     }
@@ -163,19 +189,19 @@ public:
         int total = getTotalItems();
         
         std::cout << "\n╔══════════════════════════════════════╗" << std::endl;
-        std::cout << "║          INVENTÁRIO                  ║" << std::endl;
-        std::cout << "║  Itens: " << std::setw(2) << total << "/" << std::setw(2) << maxCapacity 
+        std::cout << "║          INVENTORY                   ║" << std::endl;
+        std::cout << "║  Items: " << std::setw(2) << total << "/" << std::setw(2) << maxCapacity
                   << "                        ║" << std::endl;
         std::cout << "╚══════════════════════════════════════╝" << std::endl;
 
         if (consumables.empty() && potions.empty()) {
-            std::cout << "\n  (vazio)" << std::endl;
+            std::cout << "\n  (empty)" << std::endl;
             return;
         }
 
         // Consumíveis
         if (!consumables.empty()) {
-            std::cout << "\n┌─ CONSUMÍVEIS:" << std::endl;
+            std::cout << "\n┌─ CONSUMABLES:" << std::endl;
             for (int i = 1; i <= 4; i++) {
                 std::string key = getConsumableKey(static_cast<ConsumableID>(i));
                 auto it = consumables.find(key);
@@ -189,7 +215,7 @@ public:
 
         // Poções
         if (!potions.empty()) {
-            std::cout << "\n┌─ POÇÕES:" << std::endl;
+            std::cout << "\n┌─ POTIONS:" << std::endl;
             for (int i = 1; i <= 9; i++) {
                 std::string key = getPotionKey(static_cast<PotionID>(i));
                 auto it = potions.find(key);
@@ -207,13 +233,13 @@ public:
     // ========== SELECIONAR E USAR ITEM ==========
     void selectAndUseItem(effectsBonus &eff, finalStats &fs, int &critical_rate, HP &hp, Mana &mn) {
         if (consumables.empty() && potions.empty()) {
-            std::cout << "\n  Inventário vazio! Nada para usar.\n";
+            std::cout << "\n  Inventory is empty! Nothing to use.\n";
             std::cin.get();
             return;
         }
 
         displayInventory();
-        std::cout << "  Qual item você deseja usar? (ou 0 para cancelar)\n";
+        std::cout << "  Which item would you like to use? (or 0 to cancel)\n";
         std::cout << "  > ";
         
         int escolha;
@@ -231,7 +257,7 @@ public:
             if (getConsumableQuantity(id) > 0) {
                 useConsumable(id, fs, critical_rate, hp, mn);
             } else {
-                std::cout << "  Você não possui este item!\n";
+                std::cout << "  You do not have this item!\n";
                 std::cin.ignore();
             }
             return;
@@ -243,19 +269,19 @@ public:
             if (getPotionQuantity(id) > 0) {
                 usePotion(id, fs, critical_rate, hp, mn);
             } else {
-                std::cout << "  Você não possui esta poção!\n";
+                std::cout << "  You do not have this potion!\n";
                 std::cin.ignore();
             }
             return;
         }
 
-        std::cout << "  Opção inválida!\n";
+        std::cout << "  Invalid option!\n";
         std::cin.ignore();
     }
 
     void displayDetailed() const {
         // Exibir detalhes com efeitos
-        std::cout << "\n DETALHES DOS ITENS:\n" << std::endl;
+        std::cout << "\n ITEM DETAILS:\n" << std::endl;
         
         for (int i = 1; i <= 4; i++) {
             ConsumableID id = static_cast<ConsumableID>(i);
@@ -263,11 +289,11 @@ public:
                 auto* effect = getEffect(id);
                 std::cout << "▪ " << getConsumableName(id) << " x" << getConsumableQuantity(id) << std::endl;
                 if (effect->Bonus.HealAmount > 0)
-                    std::cout << "  ├─ Cura: +" << effect->Bonus.HealAmount << " HP" << std::endl;
+                    std::cout << "  ├─ Healing: +" << effect->Bonus.HealAmount << " HP" << std::endl;
                 if (effect->Bonus.DamageBonus > 0)
-                    std::cout << "  ├─ Dano: +" << effect->Bonus.DamageBonus << std::endl;
+                    std::cout << "  ├─ Damage: +" << effect->Bonus.DamageBonus << std::endl;
                 if (effect->Bonus.LeftTurns > 0)
-                    std::cout << "  └─ Duração: " << effect->Bonus.LeftTurns << " turnos" << std::endl;
+                    std::cout << "  └─ Duration: " << effect->Bonus.LeftTurns << " turns" << std::endl;
             }
         }
 
@@ -277,19 +303,19 @@ public:
                 auto* potion = getPotion(id);
                 std::cout << "▪ " << getPotionName(id) << " x" << getPotionQuantity(id) << std::endl;
                 if (potion->Bonus.HealAmount > 0)
-                    std::cout << "  ├─ Cura: +" << potion->Bonus.HealAmount << " HP" << std::endl;
+                    std::cout << "  ├─ Healing: +" << potion->Bonus.HealAmount << " HP" << std::endl;
                 if (potion->Bonus.ManaBonus > 0)
                     std::cout << "  ├─ Mana: +" << potion->Bonus.ManaBonus << std::endl;
                 if (potion->Bonus.DamageBonus > 0)
-                    std::cout << "  └─ Dano: +" << potion->Bonus.DamageBonus << std::endl;
+                    std::cout << "  └─ Damage: +" << potion->Bonus.DamageBonus << std::endl;
             }
         }
 
-        std::cout << "  Você quer usar algum item? (Digite o número correspondente ou 0 para sair)" << std::endl;
+        std::cout << "  Would you like to use an item? (Enter its number or 0 to exit)" << std::endl;
 
         
 
-        std::cout << "  Você tem " << getRemainingCapacity() << " espaços restantes no inventário." << std::endl;
+        std::cout << "  You have " << getRemainingCapacity() << " inventory slots remaining." << std::endl;
         std::cin.ignore();
     }
 
@@ -297,7 +323,7 @@ public:
     void clear() {
         consumables.clear();
         potions.clear();
-        std::cout << "  Inventário limpo!" << std::endl;
+        std::cout << "  Inventory cleared!" << std::endl;
         std::cin.get();
     }
 
@@ -306,12 +332,12 @@ public:
     
         while (true) {
             displayInventory();
-            std::cout << "\n=== MENU DO INVENTÁRIO ===" << std::endl;
-            std::cout << "1. Ver detalhes dos itens" << std::endl;
-            std::cout << "2. Usar item" << std::endl;
-            std::cout << "3. Sair" << std::endl;
+            std::cout << "\n=== INVENTORY MENU ===" << std::endl;
+            std::cout << "1. View item details" << std::endl;
+            std::cout << "2. Use an item" << std::endl;
+            std::cout << "3. Exit" << std::endl;
             std::cout << "━━━━━━━━━━━━━━━━━━━━━━━━" << std::endl;
-            std::cout << "Escolha: ";
+            std::cout << "Choose: ";
 
             int opcao;
             std::cin >> opcao;
@@ -327,10 +353,10 @@ public:
                     break;
 
                 case 3:
-                    std::cout << "Saindo do inventário..." << std::endl;
+                    std::cout << "Leaving inventory..." << std::endl;
                     return;
                 default:
-                    std::cout << "Opção inválida!" << std::endl;
+                    std::cout << "Invalid option!" << std::endl;
                     break;
             }
         }   
