@@ -55,6 +55,22 @@ void replaceEquipmentStats(stats& characterStats,
     characterStats.FOR += replacement.FOR - previous.FOR;
     characterStats.INT += replacement.INT - previous.INT;
 }
+
+std::vector<EquipmentOption> ownedEquipmentOptions(
+    const std::vector<EquipmentOption>& catalog,
+    const Inventory& inventory,
+    bool isWeapon)
+{
+    std::vector<EquipmentOption> owned;
+    for (const EquipmentOption& option : catalog) {
+        if (option.id == 0 ||
+            (isWeapon ? inventory.hasWeapon(option.id)
+                      : inventory.hasArmor(option.id))) {
+            owned.push_back(option);
+        }
+    }
+    return owned;
+}
 }
 
 BattleState::BattleState(sf::RenderWindow* window,
@@ -72,8 +88,10 @@ BattleState::BattleState(sf::RenderWindow* window,
       enemyNameText(this->boldFont, "", 22),
       enemyHpText(this->font, "", 16),
       messageText(this->font, "", 20),
-      weapons(getWeaponsForClass(character.characterClass)),
-      armors(getArmorForClass(character.characterClass)),
+      weapons(ownedEquipmentOptions(
+          getWeaponsForClass(character.characterClass), this->inventory, true)),
+      armors(ownedEquipmentOptions(
+          getArmorForClass(character.characterClass), this->inventory, false)),
       enemies(arenaInimigos)
 {
     if (!this->font.openFromFile("Fonts/slkscr.ttf")) {
@@ -187,6 +205,17 @@ void BattleState::syncEquipmentSelections()
         findEquipmentIndex(this->weapons, this->equippedWeaponStats);
     this->equippedArmor =
         findEquipmentIndex(this->armors, this->equippedArmorStats);
+}
+
+void BattleState::refreshOwnedEquipment()
+{
+    this->weapons = ownedEquipmentOptions(
+        getWeaponsForClass(this->character.characterClass),
+        this->inventory, true);
+    this->armors = ownedEquipmentOptions(
+        getArmorForClass(this->character.characterClass),
+        this->inventory, false);
+    this->syncEquipmentSelections();
 }
 
 void BattleState::initInterface()
@@ -352,9 +381,9 @@ void BattleState::updateInput(const float&)
 
 void BattleState::update(const float& dt)
 {
-    if (this->shopStatsChanged) {
-        this->shopStatsChanged = false;
-        this->recalculatePlayerStats();
+    if (this->shopEquipmentChanged) {
+        this->shopEquipmentChanged = false;
+        this->refreshOwnedEquipment();
     }
     this->updateHitFlashes(dt);
     this->updateMousePosition();
@@ -578,8 +607,7 @@ void BattleState::finishEnemy()
 
     this->states->push(new ShopState(
         this->window, this->supportedKeys, this->states, this->character,
-        this->inventory, this->playerBaseStats, this->equippedWeaponStats,
-        this->equippedArmorStats, this->shopStatsChanged, CurrentCoin));
+        this->inventory, this->shopEquipmentChanged, CurrentCoin));
 }
 
 void BattleState::drawBar(sf::RenderTarget* target,

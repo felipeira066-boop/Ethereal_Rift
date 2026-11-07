@@ -7,6 +7,7 @@
 #include <vector>
 
 struct EquipmentOption {
+    int id;
     std::string name;
     stats bonuses;
 };
@@ -16,14 +17,14 @@ std::vector<EquipmentOption> getEquipmentOptions(
     const Equipment& equipment)
 {
     std::vector<EquipmentOption> options = {
-        {"None", {0, 0, 0, 0, 0}}
+        {0, "None", {0, 0, 0, 0, 0}}
     };
 
     for (int id = 1; id <= 3; ++id) {
         std::string name;
         stats bonuses{};
         if (equipment.getItemData(static_cast<ItemId>(id), name, bonuses)) {
-            options.push_back({name, bonuses});
+            options.push_back({id, name, bonuses});
         }
     }
     return options;

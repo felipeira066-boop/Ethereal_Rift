@@ -13,10 +13,16 @@ namespace {
 void appendEquipmentOffers(std::vector<MerchantOffer>& offers,
                            const std::vector<EquipmentOption>& equipment,
                            const std::array<int, 3>& prices,
-                           MerchantOffer::Type type)
+                           MerchantOffer::Type type,
+                           const Inventory& inventory)
 {
     for (std::size_t index = 1; index < equipment.size(); ++index) {
         const EquipmentOption& item = equipment[index];
+        if (type == MerchantOffer::Type::Weapon
+                ? inventory.hasWeapon(item.id)
+                : inventory.hasArmor(item.id)) {
+            continue;
+        }
         std::ostringstream details;
         details << "VIT +" << item.bonuses.VIG
                 << "  DEF +" << item.bonuses.DEF
@@ -24,7 +30,7 @@ void appendEquipmentOffers(std::vector<MerchantOffer>& offers,
                 << "STR +" << item.bonuses.FOR
                 << "  INT +" << item.bonuses.INT;
         offers.push_back({
-            type, static_cast<int>(index), item.name, details.str(),
+            type, item.id, item.name, details.str(),
             prices[index - 1], item.bonuses
         });
     }
@@ -58,14 +64,6 @@ std::string effectDescription(const effectsBonus& bonus)
     return details.str();
 }
 
-void addStats(stats& target, const stats& delta)
-{
-    target.VIG += delta.VIG;
-    target.DEF += delta.DEF;
-    target.VEL += delta.VEL;
-    target.FOR += delta.FOR;
-    target.INT += delta.INT;
-}
 }
 
 ShopState::ShopState(sf::RenderWindow* window,
@@ -73,18 +71,12 @@ ShopState::ShopState(sf::RenderWindow* window,
                      std::stack<State*>* states,
                      const CharacterConfig& character,
                      Inventory& inventory,
-                     stats& playerStats,
-                     stats& weaponBonus,
-                     stats& armorBonus,
-                     bool& statsChanged,
+                     bool& equipmentChanged,
                      int& coins)
     : State(window, supportedKeys, states),
       character(character),
       inventory(inventory),
-      playerStats(playerStats),
-      weaponBonus(weaponBonus),
-      armorBonus(armorBonus),
-      statsChanged(statsChanged),
+      equipmentChanged(equipmentChanged),
       coins(coins),
       titleText(this->boldFont, "Arena Merchant", 30),
       coinsText(this->font, "", 20),
@@ -177,22 +169,24 @@ void ShopState::generateOffers()
 
     std::vector<MerchantOffer> equipment;
     appendEquipmentOffers(equipment, weapons, weaponPrices,
-                          MerchantOffer::Type::Weapon);
+                          MerchantOffer::Type::Weapon, this->inventory);
     appendEquipmentOffers(equipment, armors, armorPrices,
-                          MerchantOffer::Type::Armor);
+                          MerchantOffer::Type::Armor, this->inventory);
 
     std::random_device randomDevice;
     std::mt19937 randomEngine(randomDevice());
     std::shuffle(supplies.begin(), supplies.end(), randomEngine);
     std::shuffle(equipment.begin(), equipment.end(), randomEngine);
-    if (supplies.size() < 3 || equipment.size() < 6) {
-        throw std::runtime_error("Shop catalog does not have enough items.");
+    if (supplies.size() < 3) {
+        throw std::runtime_error("Shop catalog does not have enough supplies.");
     }
 
     this->offers.insert(this->offers.end(), supplies.begin(),
                         supplies.begin() + 3);
+    const std::size_t equipmentOfferCount =
+        std::min<std::size_t>(6, equipment.size());
     this->offers.insert(this->offers.end(), equipment.begin(),
-                        equipment.begin() + 6);
+                        equipment.begin() + equipmentOfferCount);
 }
 
 void ShopState::initInterface()
@@ -326,20 +320,20 @@ void ShopState::purchase(std::size_t offerIndex)
     } else if (offer.type == MerchantOffer::Type::Consumable) {
         addedToInventory =
             this->inventory.addConsumable(static_cast<ConsumableID>(offer.id));
+    } else if (offer.type == MerchantOffer::Type::Weapon) {
+        if (this->inventory.hasWeapon(offer.id)) {
+            this->statusText.setString("Already owned.");
+            return;
+        }
+        addedToInventory = this->inventory.addWeapon(offer.id);
+        this->equipmentChanged = addedToInventory;
     } else {
-        stats& equippedBonus = offer.type == MerchantOffer::Type::Weapon
-            ? this->weaponBonus
-            : this->armorBonus;
-        const stats previousBonus = equippedBonus;
-        addStats(this->playerStats, {
-            offer.bonuses.VIG - previousBonus.VIG,
-            offer.bonuses.DEF - previousBonus.DEF,
-            offer.bonuses.VEL - previousBonus.VEL,
-            offer.bonuses.FOR - previousBonus.FOR,
-            offer.bonuses.INT - previousBonus.INT
-        });
-        equippedBonus = offer.bonuses;
-        this->statsChanged = true;
+        if (this->inventory.hasArmor(offer.id)) {
+            this->statusText.setString("Already owned.");
+            return;
+        }
+        addedToInventory = this->inventory.addArmor(offer.id);
+        this->equipmentChanged = addedToInventory;
     }
 
     if (!addedToInventory) {

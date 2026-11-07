@@ -70,7 +70,7 @@ private:
     HP enemyHealth;
     const std::vector<MoveData>* moveTable = nullptr;
     bool gameFinished = false;
-    bool shopStatsChanged = false;
+    bool shopEquipmentChanged = false;
     bool actionButtonLatched = false;
     float playerHitFlashRemaining = 0.f;
     float playerHitFlashElapsed = 0.f;
@@ -83,6 +83,7 @@ private:
     stats levelGrowth() const;
     void recalculatePlayerStats();
     void equipSelectedItems();
+    void refreshOwnedEquipment();
     void syncEquipmentSelections();
     void loadEnemy();
     void updateBars();

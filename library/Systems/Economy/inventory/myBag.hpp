@@ -4,12 +4,15 @@
 #include <iostream>
 #include <map>
 #include <iomanip>
+#include <set>
 
 class Inventory : virtual public setEffects {
 private:
     // Map que armazena: chave = ID (combinado), valor = quantidade
     std::map<std::string, int> consumables;  // "consumable_1", "consumable_2", etc
     std::map<std::string, int> potions;      // "potion_1", "potion_2", etc
+    std::set<int> weapons;
+    std::set<int> armors;
     
     int maxCapacity;
     
@@ -24,6 +27,22 @@ private:
 
 public:
     Inventory(int capacity = 50) : maxCapacity(capacity) {}
+
+    bool addWeapon(int id) {
+        return id >= 1 && id <= 3 && this->weapons.insert(id).second;
+    }
+
+    bool addArmor(int id) {
+        return id >= 1 && id <= 3 && this->armors.insert(id).second;
+    }
+
+    bool hasWeapon(int id) const {
+        return this->weapons.find(id) != this->weapons.end();
+    }
+
+    bool hasArmor(int id) const {
+        return this->armors.find(id) != this->armors.end();
+    }
 
     // ========== ADICIONAR ITEMS ==========
     bool addConsumable(ConsumableID id, int quantity = 1) {

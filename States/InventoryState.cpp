@@ -1,7 +1,24 @@
 #include "InventoryState.hpp"
 #include "Header/Palette.hpp"
 
+#include <algorithm>
+#include <array>
+#include <cmath>
 #include <sstream>
+
+namespace {
+std::array<float, 6> getChartStats(const stats& values)
+{
+    return {
+        static_cast<float>(values.VIG),
+        static_cast<float>(values.DEF),
+        static_cast<float>(values.VEL),
+        static_cast<float>(values.FOR),
+        static_cast<float>(values.INT),
+        static_cast<float>(values.FOR + values.INT)
+    };
+}
+}
 
 InventoryState::InventoryState(sf::RenderWindow* window,
                                std::map<std::string, int>* supportedKeys,
@@ -17,6 +34,9 @@ InventoryState::InventoryState(sf::RenderWindow* window,
       titleText(this->boldFont, "Inventory", 36),
       itemsText(this->font, "", 21),
       equipmentText(this->font, "", 20),
+      equipmentChartTitle(this->boldFont, "", 18),
+      previousEquipmentLabel(this->font, "Previous", 14),
+      currentEquipmentLabel(this->font, "Equipped", 14),
       modalTitle(this->font, "", 22),
       inventory(inventory),
       weapons(weapons),
@@ -53,6 +73,7 @@ InventoryState::InventoryState(sf::RenderWindow* window,
     this->equipmentText.setPosition(sf::Vector2f(755.f, 190.f));
     this->equipmentText.setFillColor(theme::russet);
     this->updateEquipmentText();
+    this->initEquipmentChart();
 
     this->buttons["WEAPON_PREVIOUS"] = new Button(
         680.f, 260.f, 64.f, 48.f, &this->font, "<",
@@ -68,7 +89,7 @@ InventoryState::InventoryState(sf::RenderWindow* window,
         theme::russet, theme::alloyOrange, theme::camel);
 
     this->buttons["BACK"] = new Button(
-        515.f, 535.f, 250.f, 56.f, &this->font, "Back to Battle",
+        515.f, 560.f, 250.f, 48.f, &this->font, "Back to Battle",
         theme::russet, theme::alloyOrange, theme::camel);
     this->buttons["USE_ITEM"] = new Button(
         475.f, 375.f, 145.f, 52.f, &this->font, "Use",
@@ -174,26 +195,33 @@ void InventoryState::updateButtons()
     const auto changeEquipment = [this](const std::string& buttonName,
                                         int& equipped,
                                         const std::vector<EquipmentOption>& options,
-                                        int direction) {
+                                         int direction,
+                                         bool isWeapon) {
         if (!this->buttons[buttonName]->isPressed()) {
             return false;
         }
+
         const int count = static_cast<int>(options.size());
+        const stats previous = options.at(
+            static_cast<std::size_t>(equipped)).bonuses;
         equipped = (equipped + direction + count) % count;
+        this->previousEquipmentStats = previous;
+        this->comparingWeapon = isWeapon;
         this->onEquipmentChanged();
         this->updateEquipmentText();
+        this->updateEquipmentChart();
         this->actionButtonLatched = true;
         return true;
     };
 
     if (changeEquipment("WEAPON_PREVIOUS", this->equippedWeapon,
-                       this->weapons, -1) ||
+                        this->weapons, -1, true) ||
         changeEquipment("WEAPON_NEXT", this->equippedWeapon,
-                        this->weapons, 1) ||
+                         this->weapons, 1, true) ||
         changeEquipment("ARMOR_PREVIOUS", this->equippedArmor,
-                        this->armors, -1) ||
+                        this->armors, -1, false) ||
         changeEquipment("ARMOR_NEXT", this->equippedArmor,
-                        this->armors, 1)) {
+                         this->armors, 1, false)) {
         return;
     }
 
@@ -233,7 +261,7 @@ void InventoryState::refreshItems()
            << "Click an item to use it:";
     this->itemsText.setString(header.str());
 
-    float rowY = 265.f;
+    float rowY = 252.f;
     const auto addItem = [this, &rowY](bool isPotion, int id,
                                        const std::string& name, int quantity) {
         if (quantity <= 0) {
@@ -246,7 +274,7 @@ void InventoryState::refreshItems()
         text.setPosition(sf::Vector2f(220.f, rowY));
         text.setFillColor(theme::russet);
         this->itemIDs.emplace_back(isPotion, id);
-        rowY += 28.f;
+        rowY += 23.f;
     };
 
     for (int index = 1; index <= 4; ++index) {
@@ -277,6 +305,115 @@ void InventoryState::updateEquipmentText()
     this->equipmentText.setString(equipment.str());
 }
 
+void InventoryState::initEquipmentChart()
+{
+    constexpr std::size_t axisCount = 6;
+    constexpr float chartX = 900.f;
+    constexpr float chartY = 485.f;
+    constexpr float chartRadius = 70.f;
+    constexpr float pi = 3.14159265358979323846f;
+
+    this->equipmentChartTitle.setPosition(sf::Vector2f(775.f, 338.f));
+    this->equipmentChartTitle.setFillColor(theme::russet);
+    this->previousEquipmentLabel.setPosition(sf::Vector2f(775.f, 365.f));
+    this->previousEquipmentLabel.setFillColor(theme::russet);
+    this->currentEquipmentLabel.setPosition(sf::Vector2f(900.f, 365.f));
+    this->currentEquipmentLabel.setFillColor(theme::alloyOrange);
+
+    this->equipmentChartGrid.clear();
+    for (int ring = 1; ring <= 4; ++ring) {
+        sf::ConvexShape shape;
+        shape.setPointCount(axisCount);
+        shape.setFillColor(sf::Color::Transparent);
+        shape.setOutlineColor(sf::Color(
+            theme::lemonMeringue.r, theme::lemonMeringue.g,
+            theme::lemonMeringue.b, 150));
+        shape.setOutlineThickness(1.f);
+        const float radius = chartRadius * static_cast<float>(ring) / 4.f;
+        for (std::size_t axis = 0; axis < axisCount; ++axis) {
+            const float angle = -pi / 2.f +
+                2.f * pi * static_cast<float>(axis) /
+                    static_cast<float>(axisCount);
+            shape.setPoint(axis, sf::Vector2f(
+                chartX + std::cos(angle) * radius,
+                chartY + std::sin(angle) * radius));
+        }
+        this->equipmentChartGrid.push_back(shape);
+    }
+
+    this->previousEquipmentChart.setPointCount(axisCount);
+    this->previousEquipmentChart.setFillColor(sf::Color(
+        theme::russet.r, theme::russet.g, theme::russet.b, 90));
+    this->previousEquipmentChart.setOutlineColor(theme::russet);
+    this->previousEquipmentChart.setOutlineThickness(2.f);
+    this->currentEquipmentChart.setPointCount(axisCount);
+    this->currentEquipmentChart.setFillColor(sf::Color(
+        theme::alloyOrange.r, theme::alloyOrange.g,
+        theme::alloyOrange.b, 100));
+    this->currentEquipmentChart.setOutlineColor(theme::alloyOrange);
+    this->currentEquipmentChart.setOutlineThickness(2.f);
+
+    const std::array<std::string, axisCount> names = {
+        "VIT", "DEF", "SPD", "STR", "INT", "DMG"
+    };
+    for (std::size_t axis = 0; axis < axisCount; ++axis) {
+        this->equipmentChartLabels.emplace_back(this->font, names[axis], 14);
+        sf::Text& label = this->equipmentChartLabels.back();
+        label.setFillColor(theme::cornsilk);
+        const float angle = -pi / 2.f +
+            2.f * pi * static_cast<float>(axis) /
+                static_cast<float>(axisCount);
+        const sf::Vector2f point(
+            chartX + std::cos(angle) * (chartRadius + 14.f),
+            chartY + std::sin(angle) * (chartRadius + 14.f));
+        const sf::FloatRect bounds = label.getLocalBounds();
+        label.setPosition(sf::Vector2f(
+            point.x - bounds.size.x / 2.f,
+            point.y - bounds.size.y / 2.f));
+    }
+
+    this->updateEquipmentChart();
+}
+
+void InventoryState::updateEquipmentChart()
+{
+    constexpr std::size_t axisCount = 6;
+    constexpr float chartX = 900.f;
+    constexpr float chartY = 485.f;
+    constexpr float chartRadius = 70.f;
+    constexpr float pi = 3.14159265358979323846f;
+
+    const stats& equipped = this->comparingWeapon
+        ? this->weapons.at(static_cast<std::size_t>(this->equippedWeapon)).bonuses
+        : this->armors.at(static_cast<std::size_t>(this->equippedArmor)).bonuses;
+    const std::array<float, axisCount> previousValues =
+        getChartStats(this->previousEquipmentStats);
+    const std::array<float, axisCount> currentValues = getChartStats(equipped);
+    const float maximum = std::max(
+        1.f, *std::max_element(currentValues.begin(), currentValues.end()));
+    const float scale = std::max(
+        maximum,
+        *std::max_element(previousValues.begin(), previousValues.end()));
+
+    this->equipmentChartTitle.setString(
+        this->comparingWeapon ? "Weapon comparison" : "Armor comparison");
+    for (std::size_t axis = 0; axis < axisCount; ++axis) {
+        const float angle = -pi / 2.f +
+            2.f * pi * static_cast<float>(axis) /
+                static_cast<float>(axisCount);
+        const float previousRadius =
+            chartRadius * previousValues[axis] / scale;
+        const float currentRadius =
+            chartRadius * currentValues[axis] / scale;
+        this->previousEquipmentChart.setPoint(axis, sf::Vector2f(
+            chartX + std::cos(angle) * previousRadius,
+            chartY + std::sin(angle) * previousRadius));
+        this->currentEquipmentChart.setPoint(axis, sf::Vector2f(
+            chartX + std::cos(angle) * currentRadius,
+            chartY + std::sin(angle) * currentRadius));
+    }
+}
+
 void InventoryState::render(sf::RenderTarget* target)
 {
     if (!target) {
@@ -297,6 +434,17 @@ void InventoryState::render(sf::RenderTarget* target)
         target->draw(itemText);
     }
     target->draw(this->equipmentText);
+    target->draw(this->equipmentChartTitle);
+    target->draw(this->previousEquipmentLabel);
+    target->draw(this->currentEquipmentLabel);
+    for (sf::ConvexShape& ring : this->equipmentChartGrid) {
+        target->draw(ring);
+    }
+    target->draw(this->previousEquipmentChart);
+    target->draw(this->currentEquipmentChart);
+    for (sf::Text& label : this->equipmentChartLabels) {
+        target->draw(label);
+    }
     for (auto& button : this->buttons) {
         if (button.first != "USE_ITEM" && button.first != "CANCEL_ITEM") {
             button.second->render(target);

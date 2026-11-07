@@ -30,10 +30,7 @@ public:
               std::stack<State*>* states,
               const CharacterConfig& character,
               Inventory& inventory,
-              stats& playerStats,
-              stats& weaponBonus,
-              stats& armorBonus,
-              bool& statsChanged,
+              bool& equipmentChanged,
               int& coins);
     ~ShopState() override;
 
@@ -44,10 +41,7 @@ public:
 private:
     const CharacterConfig& character;
     Inventory& inventory;
-    stats& playerStats;
-    stats& weaponBonus;
-    stats& armorBonus;
-    bool& statsChanged;
+    bool& equipmentChanged;
     int& coins;
     sf::Font font;
     sf::Font boldFont;

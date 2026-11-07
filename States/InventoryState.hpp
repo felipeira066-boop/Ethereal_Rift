@@ -36,6 +36,13 @@ private:
     sf::Text titleText;
     sf::Text itemsText;
     sf::Text equipmentText;
+    sf::Text equipmentChartTitle;
+    sf::Text previousEquipmentLabel;
+    sf::Text currentEquipmentLabel;
+    std::vector<sf::ConvexShape> equipmentChartGrid;
+    sf::ConvexShape previousEquipmentChart;
+    sf::ConvexShape currentEquipmentChart;
+    std::vector<sf::Text> equipmentChartLabels;
     sf::RectangleShape modalBackdrop;
     sf::RectangleShape modalPanel;
     sf::Text modalTitle;
@@ -53,6 +60,8 @@ private:
     bool selectedItemIsPotion = false;
     int selectedItemID = 0;
     std::string selectedItemName;
+    stats previousEquipmentStats{};
+    bool comparingWeapon = true;
     bool actionButtonLatched = false;
     bool closeKeyLatched = false;
 
@@ -60,4 +69,6 @@ private:
     void refreshItems();
     void updateButtons();
     void updateEquipmentText();
+    void initEquipmentChart();
+    void updateEquipmentChart();
 };
