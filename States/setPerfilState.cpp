@@ -1,4 +1,5 @@
 #include "setPerfilState.h"
+#include "WorldState.hpp"
 #include "Header/Palette.hpp"
 
 void setPerfilState::initVariables(){
@@ -303,8 +304,12 @@ void setPerfilState::updateButton(){
 
     if(this->buttons["NEXT_STATE"]->isPressed())
     {
-        this->states->push(new BattleState(this->window, this->supportedKeys, this->states,
-                                            this->buildCharacterConfig()));
+        const CharacterConfig character = this->buildCharacterConfig();
+        auto* battle = new BattleState(
+            this->window, this->supportedKeys, this->states, character);
+        this->states->push(battle);
+        this->states->push(new WorldState(
+            this->window, this->supportedKeys, this->states, character, *battle));
     }
 
     if(this->buttons["RETURN_STATE"]->isPressed())

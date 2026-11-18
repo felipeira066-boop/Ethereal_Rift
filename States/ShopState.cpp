@@ -224,6 +224,7 @@ void ShopState::initInterface()
 
         sf::Text text(this->font, "", 16);
         text.setPosition(sf::Vector2f(x + 14.f, y + 12.f));
+        text.setLineSpacing(1.15f);
         text.setFillColor(theme::cornsilk);
         const MerchantOffer& offer = this->offers[index];
         const std::string category =

@@ -2,11 +2,13 @@
 #include "InventoryState.hpp"
 #include "DefeatState.hpp"
 #include "ShopState.hpp"
+#include "WorldState.hpp"
 #include "Header/Palette.hpp"
 
 #include <algorithm>
 #include <cmath>
 #include <sstream>
+#include <stdexcept>
 
 extern int CurrentCoin;
 
@@ -185,6 +187,18 @@ void BattleState::recalculatePlayerStats()
 
 void BattleState::equipSelectedItems()
 {
+    if (this->weapons.empty() || this->armors.empty()) {
+        return;
+    }
+    if (this->equippedWeapon < 0 ||
+        static_cast<std::size_t>(this->equippedWeapon) >= this->weapons.size()) {
+        this->equippedWeapon = 0;
+    }
+    if (this->equippedArmor < 0 ||
+        static_cast<std::size_t>(this->equippedArmor) >= this->armors.size()) {
+        this->equippedArmor = 0;
+    }
+
     const stats& newWeapon =
         this->weapons.at(static_cast<std::size_t>(this->equippedWeapon)).bonuses;
     const stats& newArmor =
@@ -375,8 +389,53 @@ void BattleState::updateInput(const float&)
     if (closeKey != this->keybinds.end() &&
         sf::Keyboard::isKeyPressed(
             static_cast<sf::Keyboard::Scancode>(closeKey->second))) {
-        this->endState();
+        this->returnToWorld();
     }
+}
+
+void BattleState::startEncounter(std::size_t selectedEnemyIndex,
+                                 std::size_t worldMobIndex)
+{
+    if (selectedEnemyIndex >= this->enemies.size()) {
+        throw std::out_of_range("World encounter enemy index is out of range.");
+    }
+
+    if (worldMobIndex >= this->defeatedWorldMobs.size()) {
+        throw std::out_of_range("World encounter mob index is out of range.");
+    }
+    this->enemyIndex = selectedEnemyIndex;
+    this->currentWorldMobIndex = worldMobIndex;
+    this->gameFinished = false;
+    this->loadEnemy();
+    this->updateBars();
+}
+
+bool BattleState::isWorldMobDefeated(std::size_t worldMobIndex) const
+{
+    return this->defeatedWorldMobs.at(worldMobIndex);
+}
+
+sf::Vector2f BattleState::getWorldPlayerPosition() const
+{
+    return this->worldPlayerPosition;
+}
+
+void BattleState::setWorldPlayerPosition(const sf::Vector2f& position)
+{
+    this->worldPlayerPosition = position;
+}
+
+void BattleState::returnToWorld()
+{
+    this->states->push(new WorldState(
+        this->window, this->supportedKeys, this->states, this->character, *this));
+}
+
+void BattleState::openShop()
+{
+    this->states->push(new ShopState(
+        this->window, this->supportedKeys, this->states, this->character,
+        this->inventory, this->shopEquipmentChanged, CurrentCoin));
 }
 
 void BattleState::update(const float& dt)
@@ -453,7 +512,7 @@ void BattleState::updateButtons()
 
     if (this->buttons["FLEE"]->isPressed()) {
         this->actionButtonLatched = true;
-        this->endState();
+        this->returnToWorld();
         return;
     }
 
@@ -594,20 +653,17 @@ void BattleState::finishEnemy()
     }
 
     CurrentCoin += static_cast<int>(coinReward);
-    ++this->enemyIndex;
-    this->loadEnemy();
     this->messageText.setString(
         "You defeated " + defeatedEnemy + " and earned " +
         std::to_string(expReward) + " XP and " +
         std::to_string(coinReward) + " coins." +
         (this->progression.getNivel() > previousLevel
             ? " New level: " + std::to_string(this->progression.getNivel()) + "!"
-            : "") +
-        (this->gameFinished ? " Arena cleared!" : ""));
+            : ""));
 
-    this->states->push(new ShopState(
-        this->window, this->supportedKeys, this->states, this->character,
-        this->inventory, this->shopEquipmentChanged, CurrentCoin));
+    this->defeatedWorldMobs.at(this->currentWorldMobIndex) = true;
+    this->gameFinished = true;
+    this->returnToWorld();
 }
 
 void BattleState::drawBar(sf::RenderTarget* target,

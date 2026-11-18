@@ -1,5 +1,8 @@
-Meu Jogo RPG criado usando linguagem C++, está em desnvolvimento 
-e atualmente só é jogavel em Terminal.
+Meu jogo RPG criado em C++ com SFML está em desenvolvimento.
+
+### Exploração
+- Use WASD para movimentar o personagem pelo mundo aberto.
+- Aproxime-se de um monstro e pressione E para iniciar um combate.
 
 ### ========== Como Baixar? ==========
 1. Vá em Releases

@@ -7,6 +7,15 @@
 #include <sstream>
 
 namespace {
+const EquipmentOption* getEquipmentOption(
+    const std::vector<EquipmentOption>& options, int index)
+{
+    if (index < 0 || static_cast<std::size_t>(index) >= options.size()) {
+        return nullptr;
+    }
+    return &options[static_cast<std::size_t>(index)];
+}
+
 std::array<float, 6> getChartStats(const stats& values)
 {
     return {
@@ -33,7 +42,7 @@ InventoryState::InventoryState(sf::RenderWindow* window,
     : State(window, supportedKeys, states),
       titleText(this->boldFont, "Inventory", 36),
       itemsText(this->font, "", 21),
-      equipmentText(this->font, "", 20),
+      equipmentText(this->font, "", 18),
       equipmentChartTitle(this->boldFont, "", 18),
       previousEquipmentLabel(this->font, "Previous", 14),
       currentEquipmentLabel(this->font, "Equipped", 14),
@@ -54,6 +63,12 @@ InventoryState::InventoryState(sf::RenderWindow* window,
     }
 
     this->initKeybinds();
+    if (!getEquipmentOption(this->weapons, this->equippedWeapon)) {
+        this->equippedWeapon = this->weapons.empty() ? -1 : 0;
+    }
+    if (!getEquipmentOption(this->armors, this->equippedArmor)) {
+        this->equippedArmor = this->armors.empty() ? -1 : 0;
+    }
     this->background.setSize(sf::Vector2f(1280.f, 720.f));
     this->background.setFillColor(theme::darkOliveGreen);
 
@@ -67,10 +82,12 @@ InventoryState::InventoryState(sf::RenderWindow* window,
     this->titleText.setFillColor(theme::russet);
 
     this->itemsText.setPosition(sf::Vector2f(220.f, 190.f));
+    this->itemsText.setLineSpacing(1.15f);
     this->itemsText.setFillColor(theme::russet);
     this->refreshItems();
 
     this->equipmentText.setPosition(sf::Vector2f(755.f, 190.f));
+    this->equipmentText.setLineSpacing(1.15f);
     this->equipmentText.setFillColor(theme::russet);
     this->updateEquipmentText();
     this->initEquipmentChart();
@@ -201,6 +218,15 @@ void InventoryState::updateButtons()
             return false;
         }
 
+        if (options.empty()) {
+            this->actionButtonLatched = true;
+            return true;
+        }
+        if (equipped < 0 ||
+            static_cast<std::size_t>(equipped) >= options.size()) {
+            equipped = 0;
+        }
+
         const int count = static_cast<int>(options.size());
         const stats previous = options.at(
             static_cast<std::size_t>(equipped)).bonuses;
@@ -274,7 +300,7 @@ void InventoryState::refreshItems()
         text.setPosition(sf::Vector2f(220.f, rowY));
         text.setFillColor(theme::russet);
         this->itemIDs.emplace_back(isPotion, id);
-        rowY += 23.f;
+        rowY += 26.f;
     };
 
     for (int index = 1; index <= 4; ++index) {
@@ -297,11 +323,15 @@ void InventoryState::refreshItems()
 
 void InventoryState::updateEquipmentText()
 {
+    const EquipmentOption* weapon =
+        getEquipmentOption(this->weapons, this->equippedWeapon);
+    const EquipmentOption* armor =
+        getEquipmentOption(this->armors, this->equippedArmor);
     std::ostringstream equipment;
     equipment << "EQUIPMENT\n\n"
-              << "Weapon:\n" << this->weapons.at(this->equippedWeapon).name
-              << "\n\n\nArmor:\n"
-              << this->armors.at(this->equippedArmor).name;
+              << "Weapon:\n" << (weapon ? weapon->name : "None")
+              << "\n\nArmor:\n"
+              << (armor ? armor->name : "None");
     this->equipmentText.setString(equipment.str());
 }
 
@@ -383,9 +413,10 @@ void InventoryState::updateEquipmentChart()
     constexpr float chartRadius = 70.f;
     constexpr float pi = 3.14159265358979323846f;
 
-    const stats& equipped = this->comparingWeapon
-        ? this->weapons.at(static_cast<std::size_t>(this->equippedWeapon)).bonuses
-        : this->armors.at(static_cast<std::size_t>(this->equippedArmor)).bonuses;
+    const EquipmentOption* equippedOption = this->comparingWeapon
+        ? getEquipmentOption(this->weapons, this->equippedWeapon)
+        : getEquipmentOption(this->armors, this->equippedArmor);
+    const stats equipped = equippedOption ? equippedOption->bonuses : stats{};
     const std::array<float, axisCount> previousValues =
         getChartStats(this->previousEquipmentStats);
     const std::array<float, axisCount> currentValues = getChartStats(equipped);

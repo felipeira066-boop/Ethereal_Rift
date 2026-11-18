@@ -21,6 +21,12 @@ public:
     void update(const float& dt) override;
     void updateInput(const float& dt) override;
     void render(sf::RenderTarget* target = NULL) override;
+    void startEncounter(std::size_t enemyIndex, std::size_t worldMobIndex);
+    bool isWorldMobDefeated(std::size_t worldMobIndex) const;
+    sf::Vector2f getWorldPlayerPosition() const;
+    void setWorldPlayerPosition(const sf::Vector2f& position);
+    void returnToWorld();
+    void openShop();
 
 private:
     CharacterConfig character;
@@ -65,6 +71,9 @@ private:
     Exp progression;
     std::vector<EnemyData> enemies;
     std::size_t enemyIndex = 0;
+    std::size_t currentWorldMobIndex = 0;
+    std::vector<bool> defeatedWorldMobs = std::vector<bool>(6, false);
+    sf::Vector2f worldPlayerPosition = {120.f, 350.f};
     EnemyData currentEnemy{};
     finalStats enemyFinalStats{};
     HP enemyHealth;
