@@ -1,5 +1,13 @@
-./vscode
+# Build artifacts
+/builds/
+/*.exe
 *.dll
-./Step-Step-compiling.md
+*.o
+*.obj
+*.pdb
+/test
 
-include
+# Local editor settings
+/.vscode/
+
+/Step-Step-compiling.md
