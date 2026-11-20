@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "../../../assets/NPCs/NPCs-City/Merchanters.hpp"
+#include "../../../Merchanters.hpp"
 #include "../../../character/Classes/allClasses.hpp"
 
 #include "../../../Systems/Economy/inventory/Bank.hpp"

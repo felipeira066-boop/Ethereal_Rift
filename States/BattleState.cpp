@@ -88,6 +88,7 @@ BattleState::BattleState(sf::RenderWindow* window,
       expText(this->font, "", 16),
       levelText(this->font, "", 18),
       enemyNameText(this->boldFont, "", 22),
+      enemyLevelText(this->font, "", 16),
       enemyHpText(this->font, "", 16),
       messageText(this->font, "", 20),
       weapons(ownedEquipmentOptions(
@@ -261,8 +262,8 @@ void BattleState::initInterface()
     configureTrack(this->manaBar, 64.f, 140.f, theme::laurelGreen);
     configureTrack(this->expTrack, 64.f, 178.f, theme::russet);
     configureTrack(this->expBar, 64.f, 178.f, theme::camel);
-    configureTrack(this->enemyHpTrack, 786.f, 102.f, theme::russet);
-    configureTrack(this->enemyHpBar, 786.f, 102.f, theme::camel);
+    configureTrack(this->enemyHpTrack, 786.f, 126.f, theme::russet);
+    configureTrack(this->enemyHpBar, 786.f, 126.f, theme::camel);
 
     this->playerNameText.setPosition(sf::Vector2f(64.f, 54.f));
     this->playerNameText.setFillColor(theme::cornsilk);
@@ -279,7 +280,9 @@ void BattleState::initInterface()
 
     this->enemyNameText.setPosition(sf::Vector2f(786.f, 54.f));
     this->enemyNameText.setFillColor(theme::lemonMeringue);
-    this->enemyHpText.setPosition(sf::Vector2f(786.f, 80.f));
+    this->enemyLevelText.setPosition(sf::Vector2f(786.f, 80.f));
+    this->enemyLevelText.setFillColor(theme::lemonMeringue);
+    this->enemyHpText.setPosition(sf::Vector2f(786.f, 104.f));
     this->enemyHpText.setFillColor(theme::cornsilk);
 
     this->playerShape.setPosition(sf::Vector2f(230.f, 365.f));
@@ -339,6 +342,9 @@ void BattleState::loadEnemy()
     this->enemyNameText.setString(
         "Enemy " + std::to_string(this->enemyIndex + 1) + "/" +
         std::to_string(this->enemies.size()) + ": " + this->currentEnemy.nome);
+    this->enemyLevelText.setString(
+        "Recommended level: " +
+        std::to_string(this->currentEnemy.nivelRecomendado));
     this->messageText.setString("Choose an ability to attack.");
 }
 
@@ -413,6 +419,11 @@ void BattleState::startEncounter(std::size_t selectedEnemyIndex,
 bool BattleState::isWorldMobDefeated(std::size_t worldMobIndex) const
 {
     return this->defeatedWorldMobs.at(worldMobIndex);
+}
+
+int BattleState::getPlayerLevel() const
+{
+    return this->progression.getNivel();
 }
 
 sf::Vector2f BattleState::getWorldPlayerPosition() const
@@ -689,6 +700,7 @@ void BattleState::render(sf::RenderTarget* target)
     target->draw(this->playerStatsText);
     target->draw(this->levelText);
     target->draw(this->enemyNameText);
+    target->draw(this->enemyLevelText);
     this->drawBar(target, this->playerHpTrack, this->playerHpBar,
                   this->playerHpText);
     this->drawBar(target, this->manaTrack, this->manaBar, this->manaText);

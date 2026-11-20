@@ -27,12 +27,14 @@ private:
         std::size_t enemyIndex;
         sf::RectangleShape hitbox;
         sf::Text label;
+        sf::Text levelLabel;
         sf::Vector2f direction;
         float speed;
         float directionChangeRemaining;
 
         Mob(const sf::Font& font, std::size_t enemyIndex,
-            const std::string& name, const sf::Vector2f& position,
+            const std::string& name, int recommendedLevel,
+            const sf::Vector2f& position,
             const sf::Vector2f& direction, float speed,
             float directionChangeRemaining);
     };

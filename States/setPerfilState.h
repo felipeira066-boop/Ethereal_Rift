@@ -4,7 +4,7 @@
 #pragma once
 
 #include "BattleState.hpp"
-#include "../Resource_Files/Button.hpp"
+#include "../assets/Button.hpp"
 #include <array>
 #include <cmath>
 #include "../Header/CharacterConfig.hpp"

@@ -2,7 +2,7 @@
 
 #include "State.hpp"
 #include "../Header/CharacterConfig.hpp"
-#include "../Resource_Files/Button.hpp"
+#include "../assets/Button.hpp"
 #include "../library/Arena.hpp"
 #include "../library/Stats/HP.hpp"
 #include "../library/Stats/Mana.hpp"
@@ -23,6 +23,7 @@ public:
     void render(sf::RenderTarget* target = NULL) override;
     void startEncounter(std::size_t enemyIndex, std::size_t worldMobIndex);
     bool isWorldMobDefeated(std::size_t worldMobIndex) const;
+    int getPlayerLevel() const;
     sf::Vector2f getWorldPlayerPosition() const;
     void setWorldPlayerPosition(const sf::Vector2f& position);
     void returnToWorld();
@@ -52,6 +53,7 @@ private:
     sf::Text expText;
     sf::Text levelText;
     sf::Text enemyNameText;
+    sf::Text enemyLevelText;
     sf::Text enemyHpText;
     sf::Text messageText;
     std::map<std::string, Button*> buttons;

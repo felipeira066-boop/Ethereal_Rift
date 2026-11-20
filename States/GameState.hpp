@@ -2,7 +2,7 @@
 
 #include "State.hpp"
 #include "../Header/CharacterConfig.hpp"
-#include "../Resource_Files/Button.hpp"
+#include "../assets/Button.hpp"
 
 class GameState : public State
 {

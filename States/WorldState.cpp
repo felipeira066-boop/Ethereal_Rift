@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iterator>
+#include <stdexcept>
 #include <utility>
 
 namespace {
@@ -21,23 +22,25 @@ struct MobSpawn {
     sf::Vector2f position;
 };
 
-const MobSpawn mobSpawns[] = {
-    {0, {360.f, 250.f}},
-    {2, {735.f, 215.f}},
-    {6, {1010.f, 330.f}},
-    {8, {500.f, 480.f}},
-    {9, {815.f, 500.f}},
-    {11, {1100.f, 215.f}}
+const sf::Vector2f mobPositions[] = {
+    {360.f, 250.f},
+    {735.f, 215.f},
+    {1010.f, 330.f},
+    {500.f, 480.f},
+    {815.f, 500.f},
+    {1100.f, 215.f}
 };
 }
 
 WorldState::Mob::Mob(const sf::Font& font, std::size_t enemyIndex,
-                     const std::string& name, const sf::Vector2f& position,
+                     const std::string& name, int recommendedLevel,
+                     const sf::Vector2f& position,
                      const sf::Vector2f& direction, float speed,
                      float directionChangeRemaining)
     : enemyIndex(enemyIndex),
       hitbox(sf::Vector2f(38.f, 44.f)),
       label(font, name, 14),
+      levelLabel(font, "Lv. " + std::to_string(recommendedLevel), 12),
       direction(direction),
       speed(speed),
       directionChangeRemaining(directionChangeRemaining)
@@ -48,7 +51,9 @@ WorldState::Mob::Mob(const sf::Font& font, std::size_t enemyIndex,
     this->hitbox.setOutlineColor(theme::alloyOrange);
     this->hitbox.setOutlineThickness(2.f);
     this->label.setFillColor(theme::cornsilk);
-    this->label.setPosition(sf::Vector2f(position.x - 20.f, position.y - 22.f));
+    this->label.setPosition(sf::Vector2f(position.x - 20.f, position.y - 28.f));
+    this->levelLabel.setFillColor(theme::lemonMeringue);
+    this->levelLabel.setPosition(sf::Vector2f(position.x - 20.f, position.y - 13.f));
 }
 
 WorldState::WorldState(sf::RenderWindow* window,
@@ -134,12 +139,45 @@ void WorldState::initWorld()
     std::uniform_real_distribution<float> directionDurationDistribution(
         0.8f, 2.4f);
 
-    this->mobs.reserve(std::size(mobSpawns));
-    for (const MobSpawn& spawn : mobSpawns) {
+    const int playerLevel = this->battle.getPlayerLevel();
+    const int preferredMinimum = std::max(1, playerLevel - 1);
+    const int maximumLevel = playerLevel + 1;
+    std::vector<std::size_t> eligibleEnemies;
+    for (std::size_t index = 0; index < arenaInimigos.size(); ++index) {
+        const int recommendedLevel = arenaInimigos[index].nivelRecomendado;
+        if (recommendedLevel >= preferredMinimum &&
+            recommendedLevel <= maximumLevel) {
+            eligibleEnemies.push_back(index);
+        }
+    }
+
+    if (eligibleEnemies.size() < std::size(mobPositions) / 2) {
+        eligibleEnemies.clear();
+        const int safeMinimum = std::max(1, playerLevel - 3);
+        for (std::size_t index = 0; index < arenaInimigos.size(); ++index) {
+            const int recommendedLevel = arenaInimigos[index].nivelRecomendado;
+            if (recommendedLevel >= safeMinimum &&
+                recommendedLevel <= maximumLevel) {
+                eligibleEnemies.push_back(index);
+            }
+        }
+    }
+
+    if (eligibleEnemies.empty()) {
+        throw std::runtime_error("No monsters are available for the player's level.");
+    }
+
+    std::shuffle(eligibleEnemies.begin(), eligibleEnemies.end(),
+                 this->randomEngine);
+    this->mobs.reserve(std::size(mobPositions));
+    for (std::size_t index = 0; index < std::size(mobPositions); ++index) {
         const float angle = angleDistribution(this->randomEngine);
+        const std::size_t enemyIndex =
+            eligibleEnemies[index % eligibleEnemies.size()];
+        const EnemyData& enemy = arenaInimigos.at(enemyIndex);
         this->mobs.emplace_back(
-            this->font, spawn.enemyIndex,
-            arenaInimigos.at(spawn.enemyIndex).nome, spawn.position,
+            this->font, enemyIndex, enemy.nome, enemy.nivelRecomendado,
+            mobPositions[index],
             sf::Vector2f(std::cos(angle), std::sin(angle)),
             speedDistribution(this->randomEngine),
             directionDurationDistribution(this->randomEngine));
@@ -199,7 +237,7 @@ void WorldState::updateMobs(float dt)
         }
 
         hitbox.setPosition(position);
-        label.setPosition(sf::Vector2f(position.x - 20.f, position.y - 22.f));
+        label.setPosition(sf::Vector2f(position.x - 20.f, position.y - 28.f));
     };
 
     for (std::size_t index = 0; index < this->mobs.size(); ++index) {
@@ -210,6 +248,9 @@ void WorldState::updateMobs(float dt)
         Mob& mob = this->mobs[index];
         moveActor(mob.hitbox, mob.label, mob.direction, mob.speed,
                   mob.directionChangeRemaining);
+        mob.levelLabel.setPosition(sf::Vector2f(
+            mob.hitbox.getPosition().x - 20.f,
+            mob.hitbox.getPosition().y - 13.f));
     }
 
     moveActor(this->merchantHitbox, this->merchantLabel,
@@ -263,7 +304,10 @@ void WorldState::updatePrompt()
     } else if (nearby.type == InteractionType::Mob) {
         const Mob& mob = this->mobs.at(nearby.mobIndex);
         this->promptText.setString(
-            "Press E to fight " + arenaInimigos.at(mob.enemyIndex).nome + ".");
+            "Press E to fight " + arenaInimigos.at(mob.enemyIndex).nome +
+            " (Lv. " +
+            std::to_string(arenaInimigos.at(mob.enemyIndex).nivelRecomendado) +
+            ").");
     } else {
         this->promptText.setString(
             "Explore and approach a monster or the Merchant.");
@@ -364,6 +408,7 @@ void WorldState::render(sf::RenderTarget* target)
         }
         target->draw(this->mobs[index].hitbox);
         target->draw(this->mobs[index].label);
+        target->draw(this->mobs[index].levelLabel);
     }
 
     target->draw(this->merchantHitbox);

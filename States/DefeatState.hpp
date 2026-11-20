@@ -1,7 +1,7 @@
 #pragma once
 
 #include "State.hpp"
-#include "../Resource_Files/Button.hpp"
+#include "../assets/Button.hpp"
 
 class DefeatState : public State
 {

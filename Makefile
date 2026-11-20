@@ -2,15 +2,15 @@ CXX := g++
 
 CXXFLAGS := -Wall -pipe -I.
 
-SFMLFLAGS := -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -lsfml-network
+SFMLFLAGS := -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -lsfml-network 
 
-TARGET := builds/Ethereal_Rift.exe
+TARGET := builds/Ethereal_Rift.exe 
 
 SRC_DIR := src 
 
 SRCS = src/main.cpp src/Game.cpp \
 		States/State.cpp States/GameState.cpp States/BattleState.cpp States/InventoryState.cpp States/MainMenuState.cpp States/setPerfilState.cpp \
-		States/DefeatState.cpp States/ShopState.cpp States/WorldState.cpp Resource_Files/Button.cpp
+		States/DefeatState.cpp States/ShopState.cpp States/WorldState.cpp assets/Button.cpp
 
 .PHONY: all run clean
 
